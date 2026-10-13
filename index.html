@@ -6,17 +6,11 @@
 <meta name="theme-color" content="#000000">
 <title>EyeStacks</title>
 <style>
-  /* ---------- Design tokens (strictly monochrome) ---------- */
   :root {
-    --bg: #000;
-    --surface: #0b0b0b;
-    --surface-2: #121212;
-    --line: #262626;
-    --line-strong: #4a4a4a;
-    --text: #fff;
-    --muted: #8c8c8c;
-    --radius: 14px;
-    --ease: cubic-bezier(.4, 0, .2, 1);
+    --bg: #000; --surface: #0b0b0b; --surface-2: #121212;
+    --line: #262626; --line-strong: #4a4a4a;
+    --text: #fff; --muted: #8c8c8c;
+    --radius: 14px; --ease: cubic-bezier(.4, 0, .2, 1);
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);
@@ -32,8 +26,8 @@
     overscroll-behavior-y: none;
   }
   button { font-family: inherit; touch-action: manipulation; }
+  a { color: inherit; }
 
-  /* ---------- Header ---------- */
   header {
     position: sticky; top: 0; z-index: 50;
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -57,7 +51,6 @@
     padding: 6px 14px; border-radius: 999px; cursor: pointer; transition: .25s var(--ease); white-space: nowrap;
   }
   .user-chip button:hover { background: var(--text); color: var(--bg); }
-
   .burger { width: 46px; height: 46px; border-radius: 12px; border: 1px solid var(--line); background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; transition: border-color .25s var(--ease); flex-shrink: 0; }
   .burger:hover { border-color: var(--text); }
   .burger span { width: 20px; height: 2px; background: var(--text); border-radius: 2px; transition: transform .3s var(--ease), opacity .2s; }
@@ -65,7 +58,6 @@
   .burger.open span:nth-child(2) { opacity: 0; }
   .burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-  /* ---------- Pages ---------- */
   main { flex: 1; display: grid; place-items: center; padding: 48px 20px calc(48px + var(--safe-bottom)); }
   .page {
     display: none; width: 100%; max-width: 440px;
@@ -90,7 +82,6 @@
   .btn.ghost { background: transparent; color: var(--text); border-color: var(--line-strong); }
   .btn.ghost:hover { background: var(--text); color: var(--bg); }
 
-  /* ---------- Page 1: Auth ---------- */
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 28px; }
   .tabs { position: relative; display: grid; grid-template-columns: 1fr 1fr; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; margin-bottom: 26px; }
   .tabs button { position: relative; z-index: 1; background: none; border: 0; color: var(--muted); font-size: .9rem; font-weight: 500; padding: 11px; cursor: pointer; transition: color .3s var(--ease); }
@@ -122,11 +113,7 @@
   .register-mode .reg-only { grid-template-rows: 1fr; opacity: 1; }
 
   .rules { list-style: none; margin: -4px 0 8px; }
-  .rules li {
-    display: flex; align-items: center; gap: 10px; font-size: .82rem; color: var(--muted);
-    max-height: 32px; padding-bottom: 7px; overflow: hidden; opacity: 1;
-    transition: max-height .3s var(--ease), padding .3s var(--ease), opacity .25s var(--ease);
-  }
+  .rules li { display: flex; align-items: center; gap: 10px; font-size: .82rem; color: var(--muted); max-height: 32px; padding-bottom: 7px; overflow: hidden; opacity: 1; transition: max-height .3s var(--ease), padding .3s var(--ease), opacity .25s var(--ease); }
   .rules li.gone { max-height: 0; padding-bottom: 0; opacity: 0; }
   .rules .mark { width: 18px; text-align: center; font-size: .85rem; font-weight: 700; color: var(--text); }
 
@@ -134,7 +121,6 @@
   .form-msg.ok { color: var(--text); }
   .form-msg.ok::before { content: "✓ "; }
 
-  /* ---------- Page 2: Features ---------- */
   .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .feature { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 40px 28px; text-align: center; transition: transform .35s var(--ease), border-color .35s var(--ease), background .35s var(--ease); }
   .feature:hover { transform: translateY(-6px); border-color: var(--line-strong); background: var(--surface-2); }
@@ -145,7 +131,6 @@
   .feature p { color: var(--muted); font-size: .95rem; }
   .cta-row { max-width: 260px; margin: 40px auto 0; }
 
-  /* ---------- Page 3: Purchase ---------- */
   .region-note { text-align: center; color: var(--muted); font-size: .8rem; letter-spacing: .06em; margin: -26px 0 34px; }
   .promo-banner { display: none; max-width: 520px; margin: 0 auto 30px; padding: 10px 16px; border: 1px solid var(--line-strong); border-radius: 10px; font-size: .88rem; text-align: center; }
   .promo-banner.show { display: block; }
@@ -163,25 +148,16 @@
   .plan .old { color: var(--muted); text-decoration: line-through; font-size: .85rem; min-height: 1.3em; margin-bottom: 18px; }
   .plan .btn { margin-top: auto; }
 
-  /* ---------- How to activate ---------- */
   .howto { max-width: 620px; margin: 64px auto 0; padding: 32px 28px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
   .howto h2 { font-size: 1.15rem; font-weight: 600; letter-spacing: .04em; text-align: center; margin-bottom: 22px; text-transform: uppercase; }
   .howto ol { list-style: none; counter-reset: step; }
-  .howto ol li {
-    counter-increment: step; position: relative;
-    padding: 10px 0 10px 46px; border-bottom: 1px solid var(--line); color: var(--text); font-size: .95rem;
-  }
+  .howto ol li { counter-increment: step; position: relative; padding: 10px 0 10px 46px; border-bottom: 1px solid var(--line); color: var(--text); font-size: .95rem; }
   .howto ol li:last-child { border-bottom: 0; }
-  .howto ol li::before {
-    content: counter(step); position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-    width: 30px; height: 30px; border: 1px solid var(--line-strong); border-radius: 50%;
-    display: grid; place-items: center; font-size: .8rem; font-weight: 700; color: var(--text);
-  }
+  .howto ol li::before { content: counter(step); position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border: 1px solid var(--line-strong); border-radius: 50%; display: grid; place-items: center; font-size: .8rem; font-weight: 700; color: var(--text); }
   .howto code { background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .88em; }
   .howto .hintline { margin-top: 18px; text-align: center; color: var(--muted); font-size: .82rem; letter-spacing: .06em; }
   .howto .hintline code { color: var(--text); }
 
-  /* ---------- Side panel ---------- */
   .overlay { position: fixed; inset: 0; z-index: 80; background: rgba(0, 0, 0, .65); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity .3s var(--ease); }
   .overlay.show { opacity: 1; pointer-events: auto; }
   .panel { position: fixed; top: 0; right: 0; height: 100%; height: 100dvh; width: min(400px, 92vw); z-index: 90; background: #080808; border-left: 1px solid var(--line); transform: translateX(105%); transition: transform .4s var(--ease); display: flex; flex-direction: column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
@@ -205,26 +181,38 @@
   .lang-row button:hover { border-color: var(--line-strong); color: var(--text); }
   .lang-row button.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 
-  /* ---------- Modal ---------- */
   .modal-wrap { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(0, 0, 0, .75); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity .3s var(--ease); }
   .modal-wrap.show { opacity: 1; pointer-events: auto; }
-  .modal { background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 34px 28px; width: 100%; max-width: 400px; text-align: center; transform: translateY(14px) scale(.97); transition: transform .35s var(--ease); max-height: calc(100dvh - 40px - var(--safe-top) - var(--safe-bottom)); overflow-y: auto; }
+  .modal { background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 32px 26px; width: 100%; max-width: 440px; text-align: center; transform: translateY(14px) scale(.97); transition: transform .35s var(--ease); max-height: calc(100dvh - 40px - var(--safe-top) - var(--safe-bottom)); overflow-y: auto; }
   .modal-wrap.show .modal { transform: none; }
   .modal .tick { width: 52px; height: 52px; margin: 0 auto 18px; border: 1px solid var(--text); border-radius: 50%; display: grid; place-items: center; font-size: 1.3rem; }
   .modal h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
   .modal .what { color: var(--text); font-size: .9rem; margin-bottom: 6px; }
-  .modal p { color: var(--muted); margin-bottom: 24px; font-size: .95rem; }
+  .modal > p { color: var(--muted); margin-bottom: 20px; font-size: .92rem; }
   .modal .btn + .btn { margin-top: 10px; }
 
-  /* Toast */
+  /* Payment blocks */
+  .pay-item { text-align: left; margin-bottom: 14px; padding: 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
+  .pay-label { font-size: .72rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; }
+  .copy-row { display: flex; align-items: center; gap: 10px; }
+  .copy-val { flex: 1; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1rem; letter-spacing: .04em; color: var(--text); word-break: break-all; user-select: all; }
+  .copy-val.small { font-size: .74rem; letter-spacing: 0; }
+  .copy-btn { flex-shrink: 0; padding: 8px 14px; background: none; border: 1px solid var(--line-strong); color: var(--text); border-radius: 8px; font-size: .78rem; cursor: pointer; transition: .2s var(--ease); min-height: 38px; }
+  .copy-btn:hover { background: var(--text); color: var(--bg); }
+  .copy-btn.done { background: var(--text); color: var(--bg); }
+  .pay-warn { margin-top: 10px; font-size: .74rem; color: #d9d9d9; line-height: 1.4; }
+  .pay-input { width: 100%; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; color: var(--text); font: inherit; font-size: 16px; outline: none; }
+  .pay-input:focus { border-color: var(--text); }
+  .pay-note { color: var(--muted); font-size: .82rem; margin: 16px 0; line-height: 1.45; }
+  .pay-hint { color: var(--muted); font-size: .78rem; text-align: center; margin-top: 8px; }
+  .qr-img { width: 200px; height: 200px; display: block; margin: 10px auto 0; background: #fff; padding: 10px; border-radius: 10px; }
+
   .toast { position: fixed; bottom: calc(26px + var(--safe-bottom)); left: 50%; transform: translate(-50%, 24px); z-index: 120; opacity: 0; pointer-events: none; background: var(--text); color: var(--bg); padding: 12px 20px; border-radius: 999px; font-size: .88rem; font-weight: 500; transition: .35s var(--ease); max-width: calc(90vw - var(--safe-left) - var(--safe-right)); text-align: center; }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
   footer { text-align: center; color: #5a5a5a; font-size: .72rem; padding: 24px 20px calc(28px + var(--safe-bottom)); max-width: 640px; margin: 0 auto; }
 
-  /* ---------- Responsive ---------- */
   @media (max-width: 1060px) { .pricing { grid-template-columns: repeat(3, 1fr); } }
-
   @media (max-width: 860px) {
     .features { grid-template-columns: 1fr; }
     header { flex-wrap: wrap; padding: calc(12px + var(--safe-top)) 16px 12px; }
@@ -235,31 +223,30 @@
     .plan { padding: 30px 16px 20px; }
     .plan .price { font-size: 1.7rem; }
     .howto { margin-top: 44px; padding: 26px 22px; }
-    .modal { padding: 28px 22px; }
+    .modal { padding: 26px 20px; }
     .panel-head { padding: 16px 18px; }
     .pbody { padding: 20px 18px; }
   }
-
   @media (max-width: 640px) {
     .pricing { grid-template-columns: 1fr; }
     .region-note { margin-top: -22px; }
     h1 { font-size: clamp(1.6rem, 8vw, 2.1rem); }
     .sub { margin-bottom: 28px; }
+    .qr-img { width: 180px; height: 180px; }
   }
-
   @media (max-width: 600px) {
     .card { padding: 22px 18px; }
     .howto { padding: 22px 18px; }
-    .modal { padding: 24px 18px; }
+    .modal { padding: 22px 16px; }
     .btn { padding: 14px; font-size: .92rem; }
     .feature { padding: 28px 20px; }
     .feature .icon { width: 64px; height: 64px; margin-bottom: 18px; }
     .feature .icon svg { width: 28px; height: 28px; }
     .howto ol li { font-size: .9rem; padding-left: 42px; }
     .howto ol li::before { width: 26px; height: 26px; font-size: .75rem; }
+    .copy-val { font-size: .9rem; }
+    .copy-val.small { font-size: .68rem; }
   }
-
-  /* Очень маленькие экраны (iPhone SE и подобные) */
   @media (max-width: 380px) {
     header { padding-left: 12px; padding-right: 12px; }
     .logo { font-size: .8rem; letter-spacing: .14em; }
@@ -270,21 +257,15 @@
     .ptabs { padding: 12px 14px 0; }
     .ptabs button { font-size: .78rem; padding: 8px 11px; }
   }
-
-  /* Ландшафт на мобильных */
   @media (max-height: 500px) and (orientation: landscape) {
     main { padding-top: 20px; padding-bottom: 20px; }
     .modal { padding: 20px; }
     .modal .tick { margin-bottom: 10px; }
-    .modal p { margin-bottom: 14px; }
+    .modal > p { margin-bottom: 14px; }
   }
-
-  /* Уменьшение анимаций — уважение к prefers-reduced-motion */
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   }
-
-  /* Улучшение тапа на мобильных — не даём браузеру зумить по двойному тапу */
   @media (hover: none) {
     .btn:active { transform: scale(.97); }
     .plan:active { transform: scale(.99); }
@@ -448,13 +429,50 @@
   </div>
 </aside>
 
+<!-- Purchase popup with payment methods -->
 <div class="modal-wrap" id="modalWrap">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="tick">✓</div>
     <h3 data-i18n="thanks_title">Thank you for your purchase!</h3>
     <div class="what" id="modalWhat"></div>
-    <p data-i18n="thanks_text">Contact support to get access.</p>
+    <p data-i18n="pay_choose">Choose a payment method below</p>
+
+    <!-- SBP QR -->
+    <div class="pay-item">
+      <div class="pay-label" data-i18n="pay_sbp">SBP (QR code)</div>
+      <img src="./qr-sbp.png" alt="SBP QR" class="qr-img">
+      <p class="pay-hint" data-i18n="pay_sbp_hint">Scan the QR in your banking app</p>
+    </div>
+
+    <!-- Sberbank card -->
+    <div class="pay-item">
+      <div class="pay-label" data-i18n="pay_card">Sberbank card</div>
+      <div class="copy-row">
+        <span class="copy-val">2202 2085 1960 9235</span>
+        <button class="copy-btn" data-copy="2202208519609235" data-i18n="copy">Copy</button>
+      </div>
+    </div>
+
+    <!-- USDT TON -->
+    <div class="pay-item">
+      <div class="pay-label" data-i18n="pay_usdt">USDT (TON network only)</div>
+      <div class="copy-row">
+        <span class="copy-val small">UQBci5BUwuh6Gj0OogWChOKQWxUGWr3QChIe2xIGg9cLhjj4</span>
+        <button class="copy-btn" data-copy="UQBci5BUwuh6Gj0OogWChOKQWxUGWr3QChIe2xIGg9cLhjj4" data-i18n="copy">Copy</button>
+      </div>
+      <div class="pay-warn" data-i18n="pay_usdt_warn">⚠ Send USDT only in TON network. Other networks will lose funds.</div>
+    </div>
+
+    <!-- Contact -->
+    <div class="pay-item">
+      <div class="pay-label" data-i18n="pay_contact">Your contact (email or Telegram)</div>
+      <input type="text" id="buyerContact" class="pay-input" data-i18n-ph="pay_contact_ph" placeholder="@username or you@example.com" autocomplete="off">
+    </div>
+
+    <p class="pay-note" data-i18n="pay_note">After payment, send the receipt to our Telegram. Access will be sent within 24 hours.</p>
+
     <a class="btn" id="downloadActivator" href="./EyeStacks.zip" download="EyeStacks.zip" data-i18n="download_activator">Download EyeStacks</a>
+    <a class="btn ghost" href="https://t.me/" target="_blank" rel="noopener" data-i18n="pay_tg">Open Telegram</a>
     <button class="btn ghost" id="modalClose" data-i18n="close">Close</button>
   </div>
 </div>
@@ -462,9 +480,6 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* =========================================================
-   i18n: EN / RU
-   ========================================================= */
 const I18N = {
   en: {
     nav_features: "Features", nav_buy: "Buy", logout: "Log out", menu: "Menu",
@@ -497,7 +512,7 @@ const I18N = {
     dur_trial: "3 days", dur_week: "7 days", dur_month: "30 days", dur_year: "365 days", dur_life: "No expiration",
     badge_popular: "Popular", badge_best: "Best Value",
     btn_buy: "Buy", free: "Free",
-    thanks_title: "Thank you for your purchase!", thanks_text: "Contact support to get access.", close: "Close",
+    thanks_title: "Thank you for your purchase!", close: "Close",
     download_activator: "Download EyeStacks",
     how_title: "How to activate",
     how_1: "Buy any plan",
@@ -521,7 +536,18 @@ const I18N = {
     promo_ok_percent: "Success! {p}% off all plans.", promo_ok_free: "Success! The 3-day trial is free.",
     promo_active: "Promo {code} applied", promo_remove: "Remove",
     lang_title: "Language", lang_text: "Choose the language of the whole site.",
-    footer: "Unofficial demo storefront. Not affiliated with, endorsed by, or sponsored by EyeStacks or its owners. No real payments are processed."
+    footer: "Unofficial demo storefront. Not affiliated with, endorsed by, or sponsored by EyeStacks or its owners. No real payments are processed.",
+    pay_choose: "Choose a payment method below",
+    pay_sbp: "SBP (QR code)",
+    pay_sbp_hint: "Scan the QR in your banking app",
+    pay_card: "Sberbank card",
+    pay_usdt: "USDT (TON network only)",
+    pay_usdt_warn: "⚠ Send USDT only in TON network. Other networks will lose funds.",
+    pay_contact: "Your contact (email or Telegram)",
+    pay_contact_ph: "@username or you@example.com",
+    pay_note: "After payment, send the receipt to our Telegram. Access will be sent within 24 hours.",
+    pay_tg: "Open Telegram",
+    copy: "Copy", copy_done: "Copied"
   },
   ru: {
     nav_features: "Преимущества", nav_buy: "Купить", logout: "Выйти", menu: "Меню",
@@ -554,7 +580,7 @@ const I18N = {
     dur_trial: "3 дня", dur_week: "7 дней", dur_month: "30 дней", dur_year: "365 дней", dur_life: "Без ограничения срока",
     badge_popular: "Популярный", badge_best: "Лучшая цена",
     btn_buy: "Купить", free: "Бесплатно",
-    thanks_title: "Спасибо за покупку!", thanks_text: "Свяжитесь с поддержкой, чтобы получить доступ.", close: "Закрыть",
+    thanks_title: "Спасибо за покупку!", close: "Закрыть",
     download_activator: "Скачать EyeStacks",
     how_title: "Как активировать",
     how_1: "Купите любой тариф",
@@ -578,7 +604,18 @@ const I18N = {
     promo_ok_percent: "Готово! Скидка {p}% на все тарифы.", promo_ok_free: "Готово! Пробный период на 3 дня бесплатно.",
     promo_active: "Промокод {code} применён", promo_remove: "Убрать",
     lang_title: "Язык", lang_text: "Выберите язык всего сайта.",
-    footer: "Неофициальная демонстрационная витрина. Не связана с EyeStacks и его владельцами и не одобрена ими. Реальные платежи не принимаются."
+    footer: "Неофициальная демонстрационная витрина. Не связана с EyeStacks и его владельцами и не одобрена ими. Реальные платежи не принимаются.",
+    pay_choose: "Выберите способ оплаты",
+    pay_sbp: "СБП (QR-код)",
+    pay_sbp_hint: "Отсканируйте QR в приложении банка",
+    pay_card: "Карта Сбербанка",
+    pay_usdt: "USDT (только сеть TON)",
+    pay_usdt_warn: "⚠ Отправляйте USDT только в сети TON. В других сетях средства потеряются.",
+    pay_contact: "Ваш контакт (email или Telegram)",
+    pay_contact_ph: "@username или you@example.com",
+    pay_note: "После оплаты пришлите чек в наш Telegram. Доступ вышлем в течение 24 часов.",
+    pay_tg: "Открыть Telegram",
+    copy: "Копировать", copy_done: "Скопировано"
   }
 };
 
@@ -621,7 +658,6 @@ function toast(msg) {
   clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("show"), 2400);
 }
 
-/* ---------- Password rules ---------- */
 const COMMON = ["password", "qwerty", "123456", "12345678", "letmein", "admin", "welcome", "iloveyou", "abc123"];
 const RULES = [
   { key: "rule_len",     test: (p) => p.length >= 8 },
@@ -650,7 +686,6 @@ function updateRules() {
 const allRulesPass = (pw) => RULES.every(r => r.test(pw));
 $("#password").addEventListener("input", updateRules);
 
-/* ---------- Pricing ---------- */
 const PLANS = [
   { id: "trial", name: "plan_trial", dur: "dur_trial" },
   { id: "week",  name: "plan_week",  dur: "dur_week" },
@@ -741,7 +776,6 @@ const closeModal = () => $("#modalWrap").classList.remove("show");
 $("#modalClose").addEventListener("click", closeModal);
 $("#modalWrap").addEventListener("click", (e) => { if (e.target.id === "modalWrap") closeModal(); });
 
-/* ---------- Language ---------- */
 let authMode = "login";
 let errKeys = { email: null, pass: null, region: null };
 let msgKey = null;
@@ -759,6 +793,7 @@ function applyLang() {
   if (msgKey) $("#authMsg").textContent = t(msgKey);
   if (promoMsg) setPromoMsg(promoMsg.key, promoMsg.vars, promoMsg.ok);
   $$("#langRow button").forEach(b => b.classList.toggle("active", b.dataset.lang === lang));
+  $$(".copy-btn").forEach(b => { if (!b.classList.contains("done")) b.textContent = t("copy"); });
 }
 function setLang(l) {
   lang = l;
@@ -770,7 +805,6 @@ $("#langRow").addEventListener("click", (e) => {
   if (b) setLang(b.dataset.lang);
 });
 
-/* ---------- SPA navigation ---------- */
 let currentPage = null;
 function showPage(name) {
   if (name !== "auth" && !getSession()) name = "auth";
@@ -794,7 +828,6 @@ document.addEventListener("click", (e) => {
   if (el) showPage(el.dataset.go);
 });
 
-/* ---------- Auth ---------- */
 function clearErrors() {
   errKeys = { email: null, pass: null, region: null };
   msgKey = null;
@@ -890,7 +923,6 @@ $("#logoutBtn").addEventListener("click", () => {
   showPage("auth");
 });
 
-/* ---------- Side panel ---------- */
 function setPanel(open) {
   $("#panel").classList.toggle("open", open);
   $("#overlay").classList.toggle("show", open);
@@ -930,6 +962,42 @@ $("#promoForm").addEventListener("submit", (e) => {
   promo.percent ? setPromoMsg("promo_ok_percent", { p: promo.percent }, true) : setPromoMsg("promo_ok_free", null, true);
   renderPricing();
 });
+
+/* ---------- Copy to clipboard ---------- */
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-copy]");
+  if (!btn) return;
+  const val = btn.dataset.copy;
+  const done = () => {
+    btn.classList.add("done");
+    btn.textContent = "✓";
+    setTimeout(() => {
+      btn.classList.remove("done");
+      btn.textContent = t("copy");
+    }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).then(done).catch(() => {
+      const ta = document.createElement("textarea");
+      ta.value = val; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done(); } catch {}
+      document.body.removeChild(ta);
+    });
+  } else {
+    const ta = document.createElement("textarea");
+    ta.value = val; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); done(); } catch {}
+    document.body.removeChild(ta);
+  }
+  toast(t("copy_done"));
+});
+
+// Сохраняем контакт покупателя локально (для его же удобства)
+document.addEventListener("input", (e) => {
+  if (e.target.id !== "buyerContact") return;
+  try { localStorage.setItem("es_last_contact", e.target.value); } catch {}
+});
+try { const c = localStorage.getItem("es_last_contact"); if (c) $("#buyerContact").value = c; } catch {}
 
 /* ---------- Init ---------- */
 try { const r = localStorage.getItem(LS_REGION); if (r) $("#region").value = r; } catch {}
