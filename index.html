@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>EyeStacks</title>
+<style>
+  /* ---------- Design tokens (strictly monochrome) ---------- */
+  :root {
+    --bg: #000;
+    --surface: #0b0b0b;
+    --surface-2: #121212;
+    --line: #262626;
+    --line-strong: #4a4a4a;
+    --text: #fff;
+    --muted: #8c8c8c;
+    --radius: 14px;
+    --ease: cubic-bezier(.4, 0, .2, 1);
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Inter", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column;
+    -webkit-font-smoothing: antialiased; line-height: 1.5; overflow-x: hidden;
+    overscroll-behavior-y: none;
+  }
+  button { font-family: inherit; touch-action: manipulation; }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: calc(16px + var(--safe-top)) calc(32px + var(--safe-right)) 16px calc(32px + var(--safe-left));
+    background: rgba(0, 0, 0, .85);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .logo { font-weight: 700; letter-spacing: .18em; text-transform: uppercase; font-size: .9rem; white-space: nowrap; cursor: pointer; }
+  .logo i { display: inline-block; width: 8px; height: 8px; background: var(--text); border-radius: 50%; margin-right: 10px; }
+  nav { display: none; gap: 4px; }
+  nav.show { display: flex; }
+  nav button { background: none; border: 0; color: var(--muted); font-size: .9rem; font-weight: 500; padding: 8px 16px; border-radius: 999px; cursor: pointer; transition: .25s var(--ease); }
+  nav button:hover { color: var(--text); background: var(--surface-2); }
+  nav button.active { color: var(--bg); background: var(--text); }
+  .right { display: flex; align-items: center; gap: 14px; }
+  .user-chip { display: none; align-items: center; gap: 12px; color: var(--muted); font-size: .85rem; }
+  .user-chip.show { display: flex; }
+  .user-chip button {
+    background: none; border: 1px solid var(--line); color: var(--text); font-size: .8rem;
+    padding: 6px 14px; border-radius: 999px; cursor: pointer; transition: .25s var(--ease); white-space: nowrap;
+  }
+  .user-chip button:hover { background: var(--text); color: var(--bg); }
+
+  .burger { width: 46px; height: 46px; border-radius: 12px; border: 1px solid var(--line); background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; transition: border-color .25s var(--ease); flex-shrink: 0; }
+  .burger:hover { border-color: var(--text); }
+  .burger span { width: 20px; height: 2px; background: var(--text); border-radius: 2px; transition: transform .3s var(--ease), opacity .2s; }
+  .burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; }
+  .burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ---------- Pages ---------- */
+  main { flex: 1; display: grid; place-items: center; padding: 48px 20px calc(48px + var(--safe-bottom)); }
+  .page {
+    display: none; width: 100%; max-width: 440px;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity .5s var(--ease), transform .5s var(--ease);
+  }
+  .page.wide { max-width: 1120px; }
+  .page.active { display: block; }
+  .page.visible { opacity: 1; transform: none; }
+
+  .eyebrow { color: var(--muted); font-size: .75rem; letter-spacing: .24em; text-transform: uppercase; margin-bottom: 14px; text-align: center; }
+  h1 { font-size: clamp(1.7rem, 7vw, 2.8rem); font-weight: 600; letter-spacing: -.02em; text-align: center; margin-bottom: 10px; }
+  .sub { color: var(--muted); text-align: center; margin-bottom: 40px; }
+
+  .btn {
+    width: 100%; padding: 15px; border: 1px solid var(--text); border-radius: 10px; background: var(--text); color: var(--bg);
+    font-weight: 600; font-size: .95rem; cursor: pointer; transition: background .25s var(--ease), color .25s var(--ease), transform .2s var(--ease);
+    text-align: center; text-decoration: none; display: inline-block; min-height: 48px;
+  }
+  .btn:hover { background: transparent; color: var(--text); }
+  .btn:active { transform: scale(.98); }
+  .btn.ghost { background: transparent; color: var(--text); border-color: var(--line-strong); }
+  .btn.ghost:hover { background: var(--text); color: var(--bg); }
+
+  /* ---------- Page 1: Auth ---------- */
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 28px; }
+  .tabs { position: relative; display: grid; grid-template-columns: 1fr 1fr; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; margin-bottom: 26px; }
+  .tabs button { position: relative; z-index: 1; background: none; border: 0; color: var(--muted); font-size: .9rem; font-weight: 500; padding: 11px; cursor: pointer; transition: color .3s var(--ease); }
+  .tabs button.active { color: var(--bg); }
+  .slider { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); background: var(--text); border-radius: 8px; transition: transform .35s var(--ease); }
+  .tabs.register .slider { transform: translateX(100%); }
+
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-size: .78rem; color: var(--muted); letter-spacing: .06em; margin-bottom: 8px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 14px; background: var(--bg); border: 1px solid var(--line);
+    border-radius: 10px; color: var(--text); font: inherit; font-size: 16px; outline: none;
+    transition: border-color .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .field textarea { min-height: 110px; resize: vertical; }
+  .field select { appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 40px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%238c8c8c' stroke-width='2'><path d='M1 1l5 5 5-5'/></svg>");
+    background-repeat: no-repeat; background-position: right 16px center; }
+  .field select option { background: #111; color: #fff; }
+  .field input::placeholder, .field textarea::placeholder { color: #555; }
+  .field input:hover, .field select:hover, .field textarea:hover { border-color: var(--line-strong); }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--text); box-shadow: 0 0 0 3px rgba(255, 255, 255, .08); }
+  .field .invalid { border-color: var(--text); }
+  .hint { min-height: 1.2em; margin-top: 6px; font-size: .78rem; color: #d9d9d9; }
+  .hint:not(:empty)::before { content: "× "; }
+
+  .reg-only { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .4s var(--ease), opacity .3s var(--ease); }
+  .reg-only > div { overflow: hidden; }
+  .register-mode .reg-only { grid-template-rows: 1fr; opacity: 1; }
+
+  .rules { list-style: none; margin: -4px 0 8px; }
+  .rules li {
+    display: flex; align-items: center; gap: 10px; font-size: .82rem; color: var(--muted);
+    max-height: 32px; padding-bottom: 7px; overflow: hidden; opacity: 1;
+    transition: max-height .3s var(--ease), padding .3s var(--ease), opacity .25s var(--ease);
+  }
+  .rules li.gone { max-height: 0; padding-bottom: 0; opacity: 0; }
+  .rules .mark { width: 18px; text-align: center; font-size: .85rem; font-weight: 700; color: var(--text); }
+
+  .form-msg { margin-top: 16px; min-height: 1.3em; text-align: center; font-size: .88rem; color: var(--muted); }
+  .form-msg.ok { color: var(--text); }
+  .form-msg.ok::before { content: "✓ "; }
+
+  /* ---------- Page 2: Features ---------- */
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 40px 28px; text-align: center; transition: transform .35s var(--ease), border-color .35s var(--ease), background .35s var(--ease); }
+  .feature:hover { transform: translateY(-6px); border-color: var(--line-strong); background: var(--surface-2); }
+  .feature .icon { width: 72px; height: 72px; margin: 0 auto 24px; border: 1px solid var(--line-strong); border-radius: 50%; display: grid; place-items: center; transition: background .35s var(--ease), color .35s var(--ease); }
+  .feature .icon svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .feature:hover .icon { background: var(--text); color: var(--bg); }
+  .feature h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; }
+  .feature p { color: var(--muted); font-size: .95rem; }
+  .cta-row { max-width: 260px; margin: 40px auto 0; }
+
+  /* ---------- Page 3: Purchase ---------- */
+  .region-note { text-align: center; color: var(--muted); font-size: .8rem; letter-spacing: .06em; margin: -26px 0 34px; }
+  .promo-banner { display: none; max-width: 520px; margin: 0 auto 30px; padding: 10px 16px; border: 1px solid var(--line-strong); border-radius: 10px; font-size: .88rem; text-align: center; }
+  .promo-banner.show { display: block; }
+  .promo-banner button { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; margin-left: 10px; font-size: .85rem; }
+  .promo-banner button:hover { color: var(--text); }
+
+  .pricing { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .plan { position: relative; display: flex; flex-direction: column; text-align: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 34px 18px 22px; transition: transform .35s var(--ease), border-color .35s var(--ease), background .35s var(--ease); }
+  .plan:hover { transform: translateY(-6px); border-color: var(--line-strong); background: var(--surface-2); }
+  .plan.hl { border-color: var(--text); }
+  .badge { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--text); color: var(--bg); font-size: .66rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; }
+  .plan h3 { font-size: 1rem; font-weight: 600; }
+  .plan .dur { color: var(--muted); font-size: .82rem; margin-top: 2px; }
+  .plan .price { font-size: 1.9rem; font-weight: 600; letter-spacing: -.02em; margin: 22px 0 2px; white-space: nowrap; }
+  .plan .old { color: var(--muted); text-decoration: line-through; font-size: .85rem; min-height: 1.3em; margin-bottom: 18px; }
+  .plan .btn { margin-top: auto; }
+
+  /* ---------- How to activate ---------- */
+  .howto { max-width: 620px; margin: 64px auto 0; padding: 32px 28px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+  .howto h2 { font-size: 1.15rem; font-weight: 600; letter-spacing: .04em; text-align: center; margin-bottom: 22px; text-transform: uppercase; }
+  .howto ol { list-style: none; counter-reset: step; }
+  .howto ol li {
+    counter-increment: step; position: relative;
+    padding: 10px 0 10px 46px; border-bottom: 1px solid var(--line); color: var(--text); font-size: .95rem;
+  }
+  .howto ol li:last-child { border-bottom: 0; }
+  .howto ol li::before {
+    content: counter(step); position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 30px; height: 30px; border: 1px solid var(--line-strong); border-radius: 50%;
+    display: grid; place-items: center; font-size: .8rem; font-weight: 700; color: var(--text);
+  }
+  .howto code { background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .88em; }
+  .howto .hintline { margin-top: 18px; text-align: center; color: var(--muted); font-size: .82rem; letter-spacing: .06em; }
+  .howto .hintline code { color: var(--text); }
+
+  /* ---------- Side panel ---------- */
+  .overlay { position: fixed; inset: 0; z-index: 80; background: rgba(0, 0, 0, .65); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity .3s var(--ease); }
+  .overlay.show { opacity: 1; pointer-events: auto; }
+  .panel { position: fixed; top: 0; right: 0; height: 100%; height: 100dvh; width: min(400px, 92vw); z-index: 90; background: #080808; border-left: 1px solid var(--line); transform: translateX(105%); transition: transform .4s var(--ease); display: flex; flex-direction: column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+  .panel.open { transform: none; }
+  .panel-head { display: flex; justify-content: space-between; align-items: center; padding: 20px 22px; border-bottom: 1px solid var(--line); }
+  .panel-head h2 { font-size: .8rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+  .close-x { background: none; border: 0; color: var(--muted); font-size: 1.8rem; line-height: 1; cursor: pointer; transition: color .2s; padding: 4px 10px; }
+  .close-x:hover { color: var(--text); }
+  .ptabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 16px 18px 0; }
+  .ptabs button { background: none; border: 1px solid var(--line); color: var(--muted); font-size: .82rem; font-weight: 500; padding: 9px 14px; border-radius: 999px; cursor: pointer; transition: .25s var(--ease); min-height: 38px; }
+  .ptabs button:hover { color: var(--text); border-color: var(--line-strong); }
+  .ptabs button.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .pbody { flex: 1; overflow-y: auto; padding: 24px 22px; -webkit-overflow-scrolling: touch; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp .35s var(--ease); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .tab-content h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; }
+  .tab-content p { color: var(--muted); font-size: .92rem; margin-bottom: 18px; }
+  .lang-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .lang-row button { padding: 15px; background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 10px; font-weight: 600; cursor: pointer; transition: .25s var(--ease); min-height: 48px; }
+  .lang-row button:hover { border-color: var(--line-strong); color: var(--text); }
+  .lang-row button.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  /* ---------- Modal ---------- */
+  .modal-wrap { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(0, 0, 0, .75); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity .3s var(--ease); }
+  .modal-wrap.show { opacity: 1; pointer-events: auto; }
+  .modal { background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 34px 28px; width: 100%; max-width: 400px; text-align: center; transform: translateY(14px) scale(.97); transition: transform .35s var(--ease); max-height: calc(100dvh - 40px - var(--safe-top) - var(--safe-bottom)); overflow-y: auto; }
+  .modal-wrap.show .modal { transform: none; }
+  .modal .tick { width: 52px; height: 52px; margin: 0 auto 18px; border: 1px solid var(--text); border-radius: 50%; display: grid; place-items: center; font-size: 1.3rem; }
+  .modal h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
+  .modal .what { color: var(--text); font-size: .9rem; margin-bottom: 6px; }
+  .modal p { color: var(--muted); margin-bottom: 24px; font-size: .95rem; }
+  .modal .btn + .btn { margin-top: 10px; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: calc(26px + var(--safe-bottom)); left: 50%; transform: translate(-50%, 24px); z-index: 120; opacity: 0; pointer-events: none; background: var(--text); color: var(--bg); padding: 12px 20px; border-radius: 999px; font-size: .88rem; font-weight: 500; transition: .35s var(--ease); max-width: calc(90vw - var(--safe-left) - var(--safe-right)); text-align: center; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  footer { text-align: center; color: #5a5a5a; font-size: .72rem; padding: 24px 20px calc(28px + var(--safe-bottom)); max-width: 640px; margin: 0 auto; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1060px) { .pricing { grid-template-columns: repeat(3, 1fr); } }
+
+  @media (max-width: 860px) {
+    .features { grid-template-columns: 1fr; }
+    header { flex-wrap: wrap; padding: calc(12px + var(--safe-top)) 16px 12px; }
+    nav { order: 3; width: 100%; justify-content: center; }
+    .user-chip span { display: none; }
+    main { padding: 32px 16px calc(40px + var(--safe-bottom)); }
+    .feature { padding: 32px 22px; }
+    .plan { padding: 30px 16px 20px; }
+    .plan .price { font-size: 1.7rem; }
+    .howto { margin-top: 44px; padding: 26px 22px; }
+    .modal { padding: 28px 22px; }
+    .panel-head { padding: 16px 18px; }
+    .pbody { padding: 20px 18px; }
+  }
+
+  @media (max-width: 640px) {
+    .pricing { grid-template-columns: 1fr; }
+    .region-note { margin-top: -22px; }
+    h1 { font-size: clamp(1.6rem, 8vw, 2.1rem); }
+    .sub { margin-bottom: 28px; }
+  }
+
+  @media (max-width: 600px) {
+    .card { padding: 22px 18px; }
+    .howto { padding: 22px 18px; }
+    .modal { padding: 24px 18px; }
+    .btn { padding: 14px; font-size: .92rem; }
+    .feature { padding: 28px 20px; }
+    .feature .icon { width: 64px; height: 64px; margin-bottom: 18px; }
+    .feature .icon svg { width: 28px; height: 28px; }
+    .howto ol li { font-size: .9rem; padding-left: 42px; }
+    .howto ol li::before { width: 26px; height: 26px; font-size: .75rem; }
+  }
+
+  /* Очень маленькие экраны (iPhone SE и подобные) */
+  @media (max-width: 380px) {
+    header { padding-left: 12px; padding-right: 12px; }
+    .logo { font-size: .8rem; letter-spacing: .14em; }
+    .burger { width: 42px; height: 42px; }
+    main { padding-left: 12px; padding-right: 12px; }
+    .card { padding: 18px 14px; }
+    .howto { padding: 18px 14px; }
+    .ptabs { padding: 12px 14px 0; }
+    .ptabs button { font-size: .78rem; padding: 8px 11px; }
+  }
+
+  /* Ландшафт на мобильных */
+  @media (max-height: 500px) and (orientation: landscape) {
+    main { padding-top: 20px; padding-bottom: 20px; }
+    .modal { padding: 20px; }
+    .modal .tick { margin-bottom: 10px; }
+    .modal p { margin-bottom: 14px; }
+  }
+
+  /* Уменьшение анимаций — уважение к prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+
+  /* Улучшение тапа на мобильных — не даём браузеру зумить по двойному тапу */
+  @media (hover: none) {
+    .btn:active { transform: scale(.97); }
+    .plan:active { transform: scale(.99); }
+    .feature:active { transform: scale(.99); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" data-go="features"><i></i>EyeStacks</div>
+  <nav id="mainNav">
+    <button data-go="features" data-i18n="nav_features">Features</button>
+    <button data-go="buy" data-i18n="nav_buy">Buy</button>
+  </nav>
+  <div class="right">
+    <div class="user-chip" id="userChip">
+      <span id="userEmail"></span>
+      <button id="logoutBtn" data-i18n="logout">Log out</button>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+  <section class="page" id="page-auth">
+    <div class="eyebrow" data-i18n="auth_eyebrow">Account</div>
+    <h1 data-i18n="auth_title">Welcome</h1>
+    <p class="sub" data-i18n="auth_sub">Log in or create an account to continue</p>
+
+    <div class="card" id="authCard">
+      <div class="tabs" id="authTabs">
+        <div class="slider"></div>
+        <button type="button" class="active" data-mode="login" data-i18n="tab_login">Login</button>
+        <button type="button" data-mode="register" data-i18n="tab_register">Register</button>
+      </div>
+
+      <form id="authForm" novalidate>
+        <div class="field">
+          <label for="email" data-i18n="label_email">Email</label>
+          <input type="email" id="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false">
+          <div class="hint" id="emailHint"></div>
+        </div>
+
+        <div class="field">
+          <label for="password" data-i18n="label_password">Password</label>
+          <input type="password" id="password" data-i18n-ph="ph_password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+          <div class="hint" id="passHint"></div>
+        </div>
+
+        <div class="reg-only"><div>
+          <ul class="rules" id="rules"></ul>
+          <div class="field">
+            <label for="region" data-i18n="label_region">Region</label>
+            <select id="region">
+              <option value="" data-i18n="region_placeholder">Select your region</option>
+              <option value="ru" data-i18n="region_ru">Russia</option>
+              <option value="us" data-i18n="region_us">United States</option>
+              <option value="ua" data-i18n="region_ua">Ukraine</option>
+            </select>
+            <div class="hint" id="regionHint"></div>
+          </div>
+        </div></div>
+
+        <button class="btn" type="submit" id="authSubmit" data-i18n="btn_login">Log In</button>
+        <div class="form-msg" id="authMsg"></div>
+      </form>
+    </div>
+  </section>
+
+  <section class="page wide" id="page-features">
+    <div class="eyebrow" data-i18n="f_eyebrow">Features</div>
+    <h1 data-i18n="f_title">Why EyeStacks?</h1>
+    <p class="sub" data-i18n="f_sub">Built for people who care about every frame</p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2c3 2 5 6 5 10l-2 3H9l-2-3c0-4 2-8 5-10z"/><circle cx="12" cy="9" r="1.6"/><path d="M9 15l-3 3v3l3-2M15 15l3 3v3l-3-2M12 17v4"/></svg></div>
+        <h3 data-i18n="f1_t">High FPS</h3><p data-i18n="f1_d">Stable 120+ frames in any game</p>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg></div>
+        <h3 data-i18n="f2_t">No input lag</h3><p data-i18n="f2_d">Instant control response</p>
+      </div>
+      <div class="feature">
+        <div class="icon"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="6"/><path d="M12 7v4"/></svg></div>
+        <h3 data-i18n="f3_t">CS-like sensitivity</h3><p data-i18n="f3_d">Familiar mouse sensitivity settings</p>
+      </div>
+    </div>
+    <div class="cta-row"><button class="btn" data-go="buy" data-i18n="f_cta">Get access</button></div>
+  </section>
+
+  <section class="page wide" id="page-buy">
+    <div class="eyebrow" data-i18n="b_eyebrow">Pricing</div>
+    <h1 data-i18n="b_title">Buy EyeStacks</h1>
+    <p class="sub" data-i18n="b_sub">Time-limited access</p>
+    <div class="region-note" id="regionNote"></div>
+    <div class="promo-banner" id="promoBanner"></div>
+    <div class="pricing" id="pricing"></div>
+
+    <div class="howto">
+      <h2 data-i18n="how_title">How to activate</h2>
+      <ol>
+        <li data-i18n="how_1">Buy any plan</li>
+        <li data-i18n="how_2">Download the archive</li>
+        <li data-i18n="how_3">Run EyeStacks.exe</li>
+        <li data-i18n="how_4">Enter your activation key</li>
+        <li data-i18n="how_5">The download will start automatically</li>
+      </ol>
+      <div class="hintline" data-i18n="how_hint">Demo key: <code>test</code></div>
+    </div>
+  </section>
+</main>
+
+<footer data-i18n="footer">Unofficial demo storefront. Not affiliated with, endorsed by, or sponsored by EyeStacks or its owners. No real payments are processed.</footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="panel" id="panel" aria-hidden="true">
+  <div class="panel-head"><h2 data-i18n="menu">Menu</h2><button class="close-x" id="panelClose" aria-label="Close">×</button></div>
+  <div class="ptabs" id="ptabs">
+    <button class="active" data-tab="support" data-i18n="tab_support">Support</button>
+    <button data-tab="telegram" data-i18n="tab_telegram">Telegram channel</button>
+    <button data-tab="about" data-i18n="tab_about">About EyeStacks</button>
+    <button data-tab="promo" data-i18n="tab_promo">Promo Code</button>
+    <button data-tab="lang" data-i18n="tab_lang">Language</button>
+  </div>
+  <div class="pbody">
+    <div class="tab-content active" id="tab-support">
+      <h3 data-i18n="support_title">Support</h3>
+      <p data-i18n="support_text">Describe your issue and we will get back to you. (Demo form — messages are not actually sent.)</p>
+      <div class="field"><textarea id="supportText" data-i18n-ph="support_ph" placeholder="How can we help?"></textarea></div>
+      <button class="btn" id="supportSend" data-i18n="support_send">Send message</button>
+    </div>
+    <div class="tab-content" id="tab-telegram">
+      <h3 data-i18n="tg_title">Telegram channel</h3>
+      <p data-i18n="tg_text">News, updates and announcements. Replace this link with your real channel.</p>
+      <a class="btn" href="https://t.me/" target="_blank" rel="noopener" data-i18n="tg_btn">Open Telegram</a>
+    </div>
+    <div class="tab-content" id="tab-about">
+      <h3 data-i18n="about_title">About EyeStacks</h3>
+      <p data-i18n="about_p1">EyeStacks is an Android app player for PC. This site offers time-limited access to performance tuning for it: higher FPS, lower input lag and familiar mouse sensitivity.</p>
+      <p data-i18n="about_p2">This is an independent, unofficial demo storefront. It is not affiliated with EyeStacks or its owners.</p>
+    </div>
+    <div class="tab-content" id="tab-promo">
+      <h3 data-i18n="promo_title">Promo Code</h3>
+      <p data-i18n="promo_text">Enter a promo code to apply a discount on the Buy page.</p>
+      <form id="promoForm" novalidate>
+        <div class="field"><input type="text" id="promoInput" data-i18n-ph="promo_ph" placeholder="Enter promo code" autocomplete="off" autocapitalize="characters"></div>
+        <button class="btn" type="submit" data-i18n="promo_apply">Apply</button>
+        <div class="form-msg" id="promoMsg"></div>
+      </form>
+    </div>
+    <div class="tab-content" id="tab-lang">
+      <h3 data-i18n="lang_title">Language</h3>
+      <p data-i18n="lang_text">Choose the language of the whole site.</p>
+      <div class="lang-row" id="langRow">
+        <button data-lang="en">English</button>
+        <button data-lang="ru">Русский</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<div class="modal-wrap" id="modalWrap">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="tick">✓</div>
+    <h3 data-i18n="thanks_title">Thank you for your purchase!</h3>
+    <div class="what" id="modalWhat"></div>
+    <p data-i18n="thanks_text">Contact support to get access.</p>
+    <a class="btn" id="downloadActivator" href="./EyeStacks.zip" download="EyeStacks.zip" data-i18n="download_activator">Download EyeStacks</a>
+    <button class="btn ghost" id="modalClose" data-i18n="close">Close</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   i18n: EN / RU
+   ========================================================= */
+const I18N = {
+  en: {
+    nav_features: "Features", nav_buy: "Buy", logout: "Log out", menu: "Menu",
+    auth_eyebrow: "Account", auth_title: "Welcome",
+    auth_sub: "Log in or create an account to continue",
+    tab_login: "Login", tab_register: "Register",
+    label_email: "Email", label_password: "Password", label_region: "Region",
+    ph_password: "Enter your password",
+    region_placeholder: "Select your region",
+    region_ru: "Russia", region_us: "United States", region_ua: "Ukraine",
+    btn_login: "Log In", btn_register: "Sign Up",
+    err_email: "Enter a valid email address", err_email_empty: "Enter your email address",
+    err_pass_empty: "Enter your password",
+    err_pass_rules: "Password does not meet all requirements",
+    err_region: "Please select your region",
+    err_creds: "Invalid email or password.",
+    err_exists: "This email is already registered. Try logging in.",
+    ok_login: "Welcome back. Redirecting…", ok_register: "Account created. Redirecting…",
+    rule_len: "Minimum 8 characters", rule_upper: "At least 1 uppercase letter",
+    rule_lower: "At least 1 lowercase letter", rule_digit: "At least 1 number",
+    rule_special: "At least 1 special character (!@#$%^&* etc.)", rule_strong: "Password is strong",
+    f_eyebrow: "Features", f_title: "Why EyeStacks?", f_sub: "Built for people who care about every frame",
+    f1_t: "High FPS", f1_d: "Stable 120+ frames in any game",
+    f2_t: "No input lag", f2_d: "Instant control response",
+    f3_t: "CS-like sensitivity", f3_d: "Familiar mouse sensitivity settings",
+    f_cta: "Get access",
+    b_eyebrow: "Pricing", b_title: "Buy EyeStacks", b_sub: "Time-limited access",
+    b_region: "Region", b_prices_in: "prices in",
+    plan_trial: "3-day trial", plan_week: "One week", plan_month: "One month", plan_year: "One year", plan_life: "Lifetime",
+    dur_trial: "3 days", dur_week: "7 days", dur_month: "30 days", dur_year: "365 days", dur_life: "No expiration",
+    badge_popular: "Popular", badge_best: "Best Value",
+    btn_buy: "Buy", free: "Free",
+    thanks_title: "Thank you for your purchase!", thanks_text: "Contact support to get access.", close: "Close",
+    download_activator: "Download EyeStacks",
+    how_title: "How to activate",
+    how_1: "Buy any plan",
+    how_2: "Download the archive",
+    how_3: "Run EyeStacks.exe",
+    how_4: "Enter your activation key",
+    how_5: "The download will start automatically",
+    how_hint: "Demo key: test",
+    tab_support: "Support", tab_telegram: "Telegram channel", tab_about: "About EyeStacks", tab_promo: "Promo Code", tab_lang: "Language",
+    support_title: "Support",
+    support_text: "Describe your issue and we will get back to you. (Demo form — messages are not actually sent.)",
+    support_ph: "How can we help?", support_send: "Send message",
+    support_empty: "Please write a message first", support_sent: "Message received (demo)",
+    tg_title: "Telegram channel", tg_text: "News, updates and announcements. Replace this link with your real channel.", tg_btn: "Open Telegram",
+    about_title: "About EyeStacks",
+    about_p1: "EyeStacks is an Android app player for PC. This site offers time-limited access to performance tuning for it: higher FPS, lower input lag and familiar mouse sensitivity.",
+    about_p2: "This is an independent, unofficial demo storefront. It is not affiliated with EyeStacks or its owners.",
+    promo_title: "Promo Code", promo_text: "Enter a promo code to apply a discount on the Buy page.",
+    promo_ph: "Enter promo code", promo_apply: "Apply",
+    promo_empty: "Please enter a promo code.", promo_bad: "Invalid promo code.",
+    promo_ok_percent: "Success! {p}% off all plans.", promo_ok_free: "Success! The 3-day trial is free.",
+    promo_active: "Promo {code} applied", promo_remove: "Remove",
+    lang_title: "Language", lang_text: "Choose the language of the whole site.",
+    footer: "Unofficial demo storefront. Not affiliated with, endorsed by, or sponsored by EyeStacks or its owners. No real payments are processed."
+  },
+  ru: {
+    nav_features: "Преимущества", nav_buy: "Купить", logout: "Выйти", menu: "Меню",
+    auth_eyebrow: "Аккаунт", auth_title: "Добро пожаловать",
+    auth_sub: "Войдите или создайте аккаунт, чтобы продолжить",
+    tab_login: "Вход", tab_register: "Регистрация",
+    label_email: "Эл. почта", label_password: "Пароль", label_region: "Регион",
+    ph_password: "Введите пароль",
+    region_placeholder: "Выберите регион",
+    region_ru: "Россия", region_us: "США", region_ua: "Украина",
+    btn_login: "Войти", btn_register: "Зарегистрироваться",
+    err_email: "Введите корректный адрес эл. почты", err_email_empty: "Введите адрес эл. почты",
+    err_pass_empty: "Введите пароль",
+    err_pass_rules: "Пароль не соответствует всем требованиям",
+    err_region: "Пожалуйста, выберите регион",
+    err_creds: "Неверная почта или пароль.",
+    err_exists: "Эта почта уже зарегистрирована. Попробуйте войти.",
+    ok_login: "С возвращением. Перенаправление…", ok_register: "Аккаунт создан. Перенаправление…",
+    rule_len: "Минимум 8 символов", rule_upper: "Минимум 1 заглавная буква",
+    rule_lower: "Минимум 1 строчная буква", rule_digit: "Минимум 1 цифра",
+    rule_special: "Минимум 1 спецсимвол (!@#$%^&* и т. д.)", rule_strong: "Пароль надёжный",
+    f_eyebrow: "Преимущества", f_title: "Почему EyeStacks?", f_sub: "Создано для тех, кому важен каждый кадр",
+    f1_t: "Высокий FPS", f1_d: "Стабильные 120+ кадров в любой игре",
+    f2_t: "Без задержки ввода", f2_d: "Мгновенный отклик управления",
+    f3_t: "Чувствительность как в CS", f3_d: "Привычные настройки чувствительности мыши",
+    f_cta: "Получить доступ",
+    b_eyebrow: "Цены", b_title: "Купить EyeStacks", b_sub: "Доступ на ограниченный срок",
+    b_region: "Регион", b_prices_in: "цены в",
+    plan_trial: "Пробный на 3 дня", plan_week: "Одна неделя", plan_month: "Один месяц", plan_year: "Один год", plan_life: "Навсегда",
+    dur_trial: "3 дня", dur_week: "7 дней", dur_month: "30 дней", dur_year: "365 дней", dur_life: "Без ограничения срока",
+    badge_popular: "Популярный", badge_best: "Лучшая цена",
+    btn_buy: "Купить", free: "Бесплатно",
+    thanks_title: "Спасибо за покупку!", thanks_text: "Свяжитесь с поддержкой, чтобы получить доступ.", close: "Закрыть",
+    download_activator: "Скачать EyeStacks",
+    how_title: "Как активировать",
+    how_1: "Купите любой тариф",
+    how_2: "Скачайте архив",
+    how_3: "Запустите EyeStacks.exe",
+    how_4: "Введите ключ активации",
+    how_5: "Загрузка начнётся автоматически",
+    how_hint: "Демо-ключ: test",
+    tab_support: "Поддержка", tab_telegram: "Telegram-канал", tab_about: "О EyeStacks", tab_promo: "Промокод", tab_lang: "Язык",
+    support_title: "Поддержка",
+    support_text: "Опишите проблему, и мы ответим вам. (Демо-форма — сообщения на самом деле не отправляются.)",
+    support_ph: "Чем мы можем помочь?", support_send: "Отправить сообщение",
+    support_empty: "Сначала напишите сообщение", support_sent: "Сообщение получено (демо)",
+    tg_title: "Telegram-канал", tg_text: "Новости, обновления и объявления. Замените эту ссылку на ваш реальный канал.", tg_btn: "Открыть Telegram",
+    about_title: "О EyeStacks",
+    about_p1: "EyeStacks — это эмулятор Android-приложений для ПК. На этом сайте продаётся доступ на ограниченный срок к настройке производительности: выше FPS, меньше задержка ввода и привычная чувствительность мыши.",
+    about_p2: "Это независимая неофициальная демонстрационная витрина. Она не связана с EyeStacks и его владельцами.",
+    promo_title: "Промокод", promo_text: "Введите промокод, чтобы получить скидку на странице покупки.",
+    promo_ph: "Введите промокод", promo_apply: "Применить",
+    promo_empty: "Пожалуйста, введите промокод.", promo_bad: "Неверный промокод.",
+    promo_ok_percent: "Готово! Скидка {p}% на все тарифы.", promo_ok_free: "Готово! Пробный период на 3 дня бесплатно.",
+    promo_active: "Промокод {code} применён", promo_remove: "Убрать",
+    lang_title: "Язык", lang_text: "Выберите язык всего сайта.",
+    footer: "Неофициальная демонстрационная витрина. Не связана с EyeStacks и его владельцами и не одобрена ими. Реальные платежи не принимаются."
+  }
+};
+
+const LS_USERS = "es_users";
+const LS_SESSION = "es_session";
+const LS_LANG = "es_lang";
+const LS_REGION = "es_region";
+const LS_PROMO = "es_promo";
+
+let lang = "en";
+try { const s = localStorage.getItem(LS_LANG); if (s === "en" || s === "ru") lang = s; } catch {}
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+const t = (key, vars) => {
+  let s = I18N[lang][key] ?? key;
+  if (vars) for (const k in vars) s = s.replace("{" + k + "}", vars[k]);
+  return s;
+};
+
+function loadJSON(k, fb) { try { return JSON.parse(localStorage.getItem(k)) ?? fb; } catch { return fb; } }
+function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+const getSession = () => loadJSON(LS_SESSION, null);
+
+async function hashPassword(pw) {
+  try {
+    if (window.crypto && crypto.subtle) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pw));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+  } catch {}
+  let h = 0;
+  for (let i = 0; i < pw.length; i++) h = (h * 31 + pw.charCodeAt(i)) | 0;
+  return "f" + h;
+}
+
+function toast(msg) {
+  const el = $("#toast");
+  el.textContent = msg; el.classList.add("show");
+  clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("show"), 2400);
+}
+
+/* ---------- Password rules ---------- */
+const COMMON = ["password", "qwerty", "123456", "12345678", "letmein", "admin", "welcome", "iloveyou", "abc123"];
+const RULES = [
+  { key: "rule_len",     test: (p) => p.length >= 8 },
+  { key: "rule_upper",   test: (p) => /[A-Z]/.test(p) },
+  { key: "rule_lower",   test: (p) => /[a-z]/.test(p) },
+  { key: "rule_digit",   test: (p) => /[0-9]/.test(p) },
+  { key: "rule_special", test: (p) => /[^A-Za-z0-9]/.test(p) },
+  { key: "rule_strong",  test: (p) =>
+      RULES.slice(0, 5).every(r => r.test(p)) &&
+      !COMMON.some(w => p.toLowerCase().includes(w)) &&
+      !/(.)\1\1/.test(p) }
+];
+const rulesEl = $("#rules");
+RULES.forEach(r => {
+  const li = document.createElement("li");
+  li.innerHTML = '<span class="mark">✕</span><span class="txt"></span>';
+  rulesEl.appendChild(li);
+});
+function updateRules() {
+  const pw = $("#password").value;
+  rulesEl.querySelectorAll("li").forEach((li, i) => {
+    li.classList.toggle("gone", RULES[i].test(pw));
+    li.querySelector(".txt").textContent = t(RULES[i].key);
+  });
+}
+const allRulesPass = (pw) => RULES.every(r => r.test(pw));
+$("#password").addEventListener("input", updateRules);
+
+/* ---------- Pricing ---------- */
+const PLANS = [
+  { id: "trial", name: "plan_trial", dur: "dur_trial" },
+  { id: "week",  name: "plan_week",  dur: "dur_week" },
+  { id: "month", name: "plan_month", dur: "dur_month", badge: "badge_popular" },
+  { id: "year",  name: "plan_year",  dur: "dur_year",  badge: "badge_best" },
+  { id: "life",  name: "plan_life",  dur: "dur_life" }
+];
+const REGIONS = {
+  us: { symbol: "$", prices: [4.99, 12.99, 29.99, 149.99, 249.99] },
+  ru: { symbol: "₽", prices: [499, 1290, 2990, 14990, 24990] },
+  ua: { symbol: "₴", prices: [199, 499, 1199, 5990, 9990] }
+};
+const PROMOS = {
+  BLUE10: { percent: 10 },
+  FREE3:  { freePlan: "trial" }
+};
+
+function currentRegion() {
+  let r = null;
+  try { r = localStorage.getItem(LS_REGION); } catch {}
+  return REGIONS[r] ? r : "us";
+}
+function activePromo() {
+  const code = loadJSON(LS_PROMO, null);
+  return code && PROMOS[code] ? { code, ...PROMOS[code] } : null;
+}
+function finalPrice(plan, i, region) {
+  const base = REGIONS[region].prices[i];
+  const promo = activePromo();
+  if (!promo) return base;
+  if (promo.freePlan === plan.id) return 0;
+  if (promo.percent) {
+    const v = base * (100 - promo.percent) / 100;
+    return region === "us" ? Math.round(v * 100) / 100 : Math.round(v);
+  }
+  return base;
+}
+function fmt(n, region) {
+  if (n === 0) return t("free");
+  if (region === "us") return "$" + n.toFixed(2);
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00A0") + "\u00A0" + REGIONS[region].symbol;
+}
+
+let promoMsg = null;
+
+function renderPricing() {
+  const region = currentRegion();
+  const box = $("#pricing");
+  box.innerHTML = "";
+  PLANS.forEach((plan, i) => {
+    const base = REGIONS[region].prices[i];
+    const final = finalPrice(plan, i, region);
+    const card = document.createElement("div");
+    card.className = "plan" + (plan.badge ? " hl" : "");
+    card.innerHTML =
+      (plan.badge ? `<div class="badge">${t(plan.badge)}</div>` : "") +
+      `<h3>${t(plan.name)}</h3>` +
+      `<div class="dur">${t(plan.dur)}</div>` +
+      `<div class="price">${fmt(final, region)}</div>` +
+      `<div class="old">${final !== base ? fmt(base, region) : ""}</div>` +
+      `<button class="btn" data-plan="${i}">${t("btn_buy")}</button>`;
+    box.appendChild(card);
+  });
+
+  $("#regionNote").textContent = `${t("b_region")}: ${t("region_" + region)} · ${t("b_prices_in")} ${REGIONS[region].symbol}`;
+
+  const promo = activePromo();
+  const banner = $("#promoBanner");
+  banner.classList.toggle("show", !!promo);
+  banner.innerHTML = promo ? `<span>✓ ${t("promo_active", { code: promo.code })}</span><button type="button" id="promoRemove">${t("promo_remove")}</button>` : "";
+}
+
+$("#pricing").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-plan]");
+  if (!btn) return;
+  const i = +btn.dataset.plan, region = currentRegion();
+  $("#modalWhat").textContent = `${t(PLANS[i].name)} — ${fmt(finalPrice(PLANS[i], i, region), region)}`;
+  $("#modalWrap").classList.add("show");
+});
+$("#promoBanner").addEventListener("click", (e) => {
+  if (e.target.id === "promoRemove") {
+    try { localStorage.removeItem(LS_PROMO); } catch {}
+    promoMsg = null; $("#promoMsg").textContent = "";
+    renderPricing();
+  }
+});
+const closeModal = () => $("#modalWrap").classList.remove("show");
+$("#modalClose").addEventListener("click", closeModal);
+$("#modalWrap").addEventListener("click", (e) => { if (e.target.id === "modalWrap") closeModal(); });
+
+/* ---------- Language ---------- */
+let authMode = "login";
+let errKeys = { email: null, pass: null, region: null };
+let msgKey = null;
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  $$("[data-i18n]").forEach(el => { el.textContent = t(el.dataset.i18n); });
+  $$("[data-i18n-ph]").forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  $("#authSubmit").textContent = t(authMode === "register" ? "btn_register" : "btn_login");
+  updateRules();
+  renderPricing();
+  if (errKeys.email) $("#emailHint").textContent = t(errKeys.email);
+  if (errKeys.pass) $("#passHint").textContent = t(errKeys.pass);
+  if (errKeys.region) $("#regionHint").textContent = t(errKeys.region);
+  if (msgKey) $("#authMsg").textContent = t(msgKey);
+  if (promoMsg) setPromoMsg(promoMsg.key, promoMsg.vars, promoMsg.ok);
+  $$("#langRow button").forEach(b => b.classList.toggle("active", b.dataset.lang === lang));
+}
+function setLang(l) {
+  lang = l;
+  try { localStorage.setItem(LS_LANG, l); } catch {}
+  applyLang();
+}
+$("#langRow").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-lang]");
+  if (b) setLang(b.dataset.lang);
+});
+
+/* ---------- SPA navigation ---------- */
+let currentPage = null;
+function showPage(name) {
+  if (name !== "auth" && !getSession()) name = "auth";
+  const next = $("#page-" + name);
+  if (!next || name === currentPage) return;
+  const prev = currentPage ? $("#page-" + currentPage) : null;
+  const swap = () => {
+    if (prev) prev.classList.remove("active", "visible");
+    if (name === "buy") renderPricing();
+    next.classList.add("active");
+    void next.offsetWidth;
+    next.classList.add("visible");
+    currentPage = name;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    $$("#mainNav button").forEach(b => b.classList.toggle("active", b.dataset.go === name));
+  };
+  if (prev) { prev.classList.remove("visible"); setTimeout(swap, 300); } else swap();
+}
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-go]");
+  if (el) showPage(el.dataset.go);
+});
+
+/* ---------- Auth ---------- */
+function clearErrors() {
+  errKeys = { email: null, pass: null, region: null };
+  msgKey = null;
+  $$("#authForm .invalid").forEach(el => el.classList.remove("invalid"));
+  $("#emailHint").textContent = ""; $("#passHint").textContent = ""; $("#regionHint").textContent = "";
+  $("#authMsg").textContent = ""; $("#authMsg").classList.remove("ok");
+}
+$$("#authTabs button").forEach(btn => btn.addEventListener("click", () => {
+  authMode = btn.dataset.mode;
+  const reg = authMode === "register";
+  $$("#authTabs button").forEach(b => b.classList.toggle("active", b === btn));
+  $("#authTabs").classList.toggle("register", reg);
+  $("#authCard").classList.toggle("register-mode", reg);
+  $("#password").autocomplete = reg ? "new-password" : "current-password";
+  clearErrors();
+  applyLang();
+}));
+
+$("#region").addEventListener("change", (e) => {
+  try { e.target.value ? localStorage.setItem(LS_REGION, e.target.value) : localStorage.removeItem(LS_REGION); } catch {}
+  e.target.classList.remove("invalid"); errKeys.region = null; $("#regionHint").textContent = "";
+});
+
+const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+function fail(field, hintId, key) {
+  errKeys[field === "password" ? "pass" : field] = key;
+  $("#" + field).classList.add("invalid");
+  $("#" + hintId).textContent = t(key);
+}
+function setAuthMsg(key, ok) {
+  msgKey = key;
+  $("#authMsg").textContent = t(key);
+  $("#authMsg").classList.toggle("ok", !!ok);
+}
+
+$("#authForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  clearErrors();
+  const email = $("#email").value.trim().toLowerCase();
+  const pass = $("#password").value;
+  let ok = true;
+
+  if (!email) { fail("email", "emailHint", "err_email_empty"); ok = false; }
+  else if (!validEmail(email)) { fail("email", "emailHint", "err_email"); ok = false; }
+
+  const users = loadJSON(LS_USERS, {});
+
+  if (authMode === "register") {
+    const region = $("#region").value;
+    if (!pass) { fail("password", "passHint", "err_pass_empty"); ok = false; }
+    else if (!allRulesPass(pass)) { fail("password", "passHint", "err_pass_rules"); ok = false; }
+    if (!region) { fail("region", "regionHint", "err_region"); ok = false; }
+    if (!ok) return;
+    if (users[email]) { setAuthMsg("err_exists", false); return; }
+
+    users[email] = { hash: await hashPassword(pass), region, created: Date.now() };
+    saveJSON(LS_USERS, users);
+    saveJSON(LS_SESSION, email);
+    try { localStorage.setItem(LS_REGION, region); } catch {}
+    setAuthMsg("ok_register", true);
+    finishAuth(region);
+    return;
+  }
+
+  if (!pass) { fail("password", "passHint", "err_pass_empty"); ok = false; }
+  if (!ok) return;
+  const hash = await hashPassword(pass);
+  if (!users[email] || users[email].hash !== hash) { setAuthMsg("err_creds", false); return; }
+  saveJSON(LS_SESSION, email);
+  const region = users[email].region;
+  if (region) { try { localStorage.setItem(LS_REGION, region); } catch {} }
+  setAuthMsg("ok_login", true);
+  finishAuth(region);
+});
+
+function finishAuth(region) {
+  updateUserChip();
+  $("#authForm").reset();
+  if (region) $("#region").value = region;
+  updateRules();
+  setTimeout(() => { clearErrors(); showPage("features"); }, 900);
+}
+
+function updateUserChip() {
+  const email = getSession();
+  $("#userChip").classList.toggle("show", !!email);
+  $("#mainNav").classList.toggle("show", !!email);
+  $("#userEmail").textContent = email || "";
+}
+$("#logoutBtn").addEventListener("click", () => {
+  try { localStorage.removeItem(LS_SESSION); } catch {}
+  updateUserChip();
+  showPage("auth");
+});
+
+/* ---------- Side panel ---------- */
+function setPanel(open) {
+  $("#panel").classList.toggle("open", open);
+  $("#overlay").classList.toggle("show", open);
+  $("#burger").classList.toggle("open", open);
+  $("#panel").setAttribute("aria-hidden", String(!open));
+}
+$("#burger").addEventListener("click", () => setPanel(!$("#panel").classList.contains("open")));
+$("#panelClose").addEventListener("click", () => setPanel(false));
+$("#overlay").addEventListener("click", () => setPanel(false));
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { setPanel(false); closeModal(); } });
+
+$$("#ptabs button").forEach(btn => btn.addEventListener("click", () => {
+  $$("#ptabs button").forEach(b => b.classList.toggle("active", b === btn));
+  $$(".tab-content").forEach(c => c.classList.toggle("active", c.id === "tab-" + btn.dataset.tab));
+}));
+
+$("#supportSend").addEventListener("click", () => {
+  const box = $("#supportText");
+  if (!box.value.trim()) { toast(t("support_empty")); return; }
+  box.value = "";
+  toast(t("support_sent"));
+});
+
+function setPromoMsg(key, vars, ok) {
+  promoMsg = { key, vars, ok };
+  const m = $("#promoMsg");
+  m.textContent = t(key, vars);
+  m.classList.toggle("ok", !!ok);
+}
+$("#promoForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const code = $("#promoInput").value.trim().toUpperCase();
+  if (!code) { setPromoMsg("promo_empty", null, false); return; }
+  const promo = PROMOS[code];
+  if (!promo) { setPromoMsg("promo_bad", null, false); return; }
+  saveJSON(LS_PROMO, code);
+  promo.percent ? setPromoMsg("promo_ok_percent", { p: promo.percent }, true) : setPromoMsg("promo_ok_free", null, true);
+  renderPricing();
+});
+
+/* ---------- Init ---------- */
+try { const r = localStorage.getItem(LS_REGION); if (r) $("#region").value = r; } catch {}
+updateUserChip();
+applyLang();
+showPage(getSession() ? "features" : "auth");
+</script>
+</body>
+</html>
