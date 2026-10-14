@@ -15,6 +15,7 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);
     --safe-right: env(safe-area-inset-right, 0px);
+    --badge: #ff3b3b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html { -webkit-text-size-adjust: 100%; }
@@ -25,7 +26,7 @@
     -webkit-font-smoothing: antialiased; line-height: 1.5; overflow-x: hidden;
     overscroll-behavior-y: none;
   }
-  button { font-family: inherit; touch-action: manipulation; }
+  button, input, select, textarea { font-family: inherit; touch-action: manipulation; }
   a { color: inherit; }
 
   header {
@@ -51,36 +52,30 @@
     padding: 6px 14px; border-radius: 999px; cursor: pointer; transition: .25s var(--ease); white-space: nowrap;
   }
   .user-chip button:hover { background: var(--text); color: var(--bg); }
-  .burger { width: 46px; height: 46px; border-radius: 12px; border: 1px solid var(--line); background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; transition: border-color .25s var(--ease); flex-shrink: 0; }
+  .burger { position: relative; width: 46px; height: 46px; border-radius: 12px; border: 1px solid var(--line); background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; transition: border-color .25s var(--ease); flex-shrink: 0; }
   .burger:hover { border-color: var(--text); }
   .burger span { width: 20px; height: 2px; background: var(--text); border-radius: 2px; transition: transform .3s var(--ease), opacity .2s; }
   .burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   .burger.open span:nth-child(2) { opacity: 0; }
   .burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .burger .dot { position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--badge); display: none; }
+  .burger .dot.show { display: block; }
 
   main { flex: 1; display: grid; place-items: center; padding: 48px 20px calc(48px + var(--safe-bottom)); }
-  .page {
-    display: none; width: 100%; max-width: 440px;
-    opacity: 0; transform: translateY(16px);
-    transition: opacity .5s var(--ease), transform .5s var(--ease);
-  }
+  .page { display: none; width: 100%; max-width: 440px; opacity: 0; transform: translateY(16px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
   .page.wide { max-width: 1120px; }
   .page.active { display: block; }
   .page.visible { opacity: 1; transform: none; }
-
   .eyebrow { color: var(--muted); font-size: .75rem; letter-spacing: .24em; text-transform: uppercase; margin-bottom: 14px; text-align: center; }
   h1 { font-size: clamp(1.7rem, 7vw, 2.8rem); font-weight: 600; letter-spacing: -.02em; text-align: center; margin-bottom: 10px; }
   .sub { color: var(--muted); text-align: center; margin-bottom: 40px; }
 
-  .btn {
-    width: 100%; padding: 15px; border: 1px solid var(--text); border-radius: 10px; background: var(--text); color: var(--bg);
-    font-weight: 600; font-size: .95rem; cursor: pointer; transition: background .25s var(--ease), color .25s var(--ease), transform .2s var(--ease);
-    text-align: center; text-decoration: none; display: inline-block; min-height: 48px;
-  }
+  .btn { width: 100%; padding: 15px; border: 1px solid var(--text); border-radius: 10px; background: var(--text); color: var(--bg); font-weight: 600; font-size: .95rem; cursor: pointer; transition: .25s var(--ease); text-align: center; text-decoration: none; display: inline-block; min-height: 48px; }
   .btn:hover { background: transparent; color: var(--text); }
   .btn:active { transform: scale(.98); }
   .btn.ghost { background: transparent; color: var(--text); border-color: var(--line-strong); }
   .btn.ghost:hover { background: var(--text); color: var(--bg); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
 
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 28px; }
   .tabs { position: relative; display: grid; grid-template-columns: 1fr 1fr; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; margin-bottom: 26px; }
@@ -122,9 +117,9 @@
   .form-msg.ok::before { content: "✓ "; }
 
   .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .feature { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 40px 28px; text-align: center; transition: transform .35s var(--ease), border-color .35s var(--ease), background .35s var(--ease); }
+  .feature { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 40px 28px; text-align: center; transition: .35s var(--ease); }
   .feature:hover { transform: translateY(-6px); border-color: var(--line-strong); background: var(--surface-2); }
-  .feature .icon { width: 72px; height: 72px; margin: 0 auto 24px; border: 1px solid var(--line-strong); border-radius: 50%; display: grid; place-items: center; transition: background .35s var(--ease), color .35s var(--ease); }
+  .feature .icon { width: 72px; height: 72px; margin: 0 auto 24px; border: 1px solid var(--line-strong); border-radius: 50%; display: grid; place-items: center; transition: .35s var(--ease); }
   .feature .icon svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .feature:hover .icon { background: var(--text); color: var(--bg); }
   .feature h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; }
@@ -138,13 +133,16 @@
   .promo-banner button:hover { color: var(--text); }
 
   .pricing { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
-  .plan { position: relative; display: flex; flex-direction: column; text-align: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 34px 18px 22px; transition: transform .35s var(--ease), border-color .35s var(--ease), background .35s var(--ease); }
+  .plan { position: relative; display: flex; flex-direction: column; text-align: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 34px 18px 22px; transition: .35s var(--ease); }
   .plan:hover { transform: translateY(-6px); border-color: var(--line-strong); background: var(--surface-2); }
   .plan.hl { border-color: var(--text); }
+  .plan.discount { border-color: var(--badge); }
   .badge { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--text); color: var(--bg); font-size: .66rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; }
+  .badge.discount-badge { background: var(--badge); color: #fff; }
   .plan h3 { font-size: 1rem; font-weight: 600; }
   .plan .dur { color: var(--muted); font-size: .82rem; margin-top: 2px; }
   .plan .price { font-size: 1.9rem; font-weight: 600; letter-spacing: -.02em; margin: 22px 0 2px; white-space: nowrap; }
+  .plan.discount .price { color: var(--badge); }
   .plan .old { color: var(--muted); text-decoration: line-through; font-size: .85rem; min-height: 1.3em; margin-bottom: 18px; }
   .plan .btn { margin-top: auto; }
 
@@ -158,57 +156,107 @@
   .howto .hintline { margin-top: 18px; text-align: center; color: var(--muted); font-size: .82rem; letter-spacing: .06em; }
   .howto .hintline code { color: var(--text); }
 
+  /* Menu panel */
   .overlay { position: fixed; inset: 0; z-index: 80; background: rgba(0, 0, 0, .65); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity .3s var(--ease); }
   .overlay.show { opacity: 1; pointer-events: auto; }
-  .panel { position: fixed; top: 0; right: 0; height: 100%; height: 100dvh; width: min(400px, 92vw); z-index: 90; background: #080808; border-left: 1px solid var(--line); transform: translateX(105%); transition: transform .4s var(--ease); display: flex; flex-direction: column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+  .panel { position: fixed; top: 0; right: 0; height: 100%; height: 100dvh; width: min(420px, 94vw); z-index: 90; background: #080808; border-left: 1px solid var(--line); transform: translateX(105%); transition: transform .4s var(--ease); display: flex; flex-direction: column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
   .panel.open { transform: none; }
   .panel-head { display: flex; justify-content: space-between; align-items: center; padding: 20px 22px; border-bottom: 1px solid var(--line); }
   .panel-head h2 { font-size: .8rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
   .close-x { background: none; border: 0; color: var(--muted); font-size: 1.8rem; line-height: 1; cursor: pointer; transition: color .2s; padding: 4px 10px; }
   .close-x:hover { color: var(--text); }
-  .ptabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 16px 18px 0; }
-  .ptabs button { background: none; border: 1px solid var(--line); color: var(--muted); font-size: .82rem; font-weight: 500; padding: 9px 14px; border-radius: 999px; cursor: pointer; transition: .25s var(--ease); min-height: 38px; }
-  .ptabs button:hover { color: var(--text); border-color: var(--line-strong); }
-  .ptabs button.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-  .pbody { flex: 1; overflow-y: auto; padding: 24px 22px; -webkit-overflow-scrolling: touch; }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; animation: fadeUp .35s var(--ease); }
+  .pbody { flex: 1; overflow-y: auto; padding: 0; -webkit-overflow-scrolling: touch; }
+
+  .menu-list { display: flex; flex-direction: column; }
+  .menu-list button.menu-item,
+  .menu-list a.menu-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    width: 100%; text-align: left; padding: 16px 22px;
+    background: none; border: 0; border-bottom: 1px solid var(--line);
+    color: var(--text); font-size: .95rem; font-weight: 500; cursor: pointer;
+    text-decoration: none; transition: background .2s var(--ease);
+  }
+  .menu-list button.menu-item:hover,
+  .menu-list a.menu-item:hover { background: var(--surface-2); }
+  .menu-item .left { display: flex; align-items: center; gap: 12px; }
+  .menu-item .icon { width: 20px; text-align: center; color: var(--muted); }
+  .menu-item .cnt { background: var(--badge); color: #fff; font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; min-width: 20px; text-align: center; }
+  .menu-item .cnt.hidden { display: none; }
+  .menu-item.pinned { background: linear-gradient(90deg, var(--surface-2) 0%, transparent 100%); border-left: 2px solid var(--text); }
+  .menu-item.admin { color: #ffb3b3; }
+  .menu-section-title { padding: 14px 22px 6px; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+
+  .subpage { display: none; padding: 24px 22px; }
+  .subpage.active { display: block; animation: fadeUp .35s var(--ease); }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  .tab-content h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; }
-  .tab-content p { color: var(--muted); font-size: .92rem; margin-bottom: 18px; }
+  .subpage h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; }
+  .subpage p { color: var(--muted); font-size: .92rem; margin-bottom: 18px; }
+  .subpage .back { background: none; border: 0; color: var(--muted); font-size: .85rem; cursor: pointer; padding: 4px 0; margin-bottom: 12px; }
+  .subpage .back:hover { color: var(--text); }
   .lang-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .lang-row button { padding: 15px; background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 10px; font-weight: 600; cursor: pointer; transition: .25s var(--ease); min-height: 48px; }
   .lang-row button:hover { border-color: var(--line-strong); color: var(--text); }
   .lang-row button.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 
+  /* Modal */
   .modal-wrap { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(0, 0, 0, .75); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity .3s var(--ease); }
   .modal-wrap.show { opacity: 1; pointer-events: auto; }
-  .modal { background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 32px 26px; width: 100%; max-width: 440px; text-align: center; transform: translateY(14px) scale(.97); transition: transform .35s var(--ease); max-height: calc(100dvh - 40px - var(--safe-top) - var(--safe-bottom)); overflow-y: auto; }
+  .modal { background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 32px 26px; width: 100%; max-width: 460px; text-align: center; transform: translateY(14px) scale(.97); transition: transform .35s var(--ease); max-height: calc(100dvh - 40px - var(--safe-top) - var(--safe-bottom)); overflow-y: auto; }
   .modal-wrap.show .modal { transform: none; }
   .modal .tick { width: 52px; height: 52px; margin: 0 auto 18px; border: 1px solid var(--text); border-radius: 50%; display: grid; place-items: center; font-size: 1.3rem; }
   .modal h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
-  .modal .what { color: var(--text); font-size: .9rem; margin-bottom: 6px; }
-  .modal > p { color: var(--muted); margin-bottom: 20px; font-size: .92rem; }
+  .modal .what { color: var(--text); font-size: .95rem; margin-bottom: 6px; }
+  .modal > p { color: var(--muted); margin-bottom: 18px; font-size: .9rem; }
   .modal .btn + .btn { margin-top: 10px; }
-
-  /* Payment blocks */
-  .pay-item { text-align: left; margin-bottom: 14px; padding: 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
-  .pay-label { font-size: .72rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; }
-  .copy-row { display: flex; align-items: center; gap: 10px; }
-  .copy-val { flex: 1; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1rem; letter-spacing: .04em; color: var(--text); word-break: break-all; user-select: all; }
-  .copy-val.small { font-size: .74rem; letter-spacing: 0; }
-  .copy-btn { flex-shrink: 0; padding: 8px 14px; background: none; border: 1px solid var(--line-strong); color: var(--text); border-radius: 8px; font-size: .78rem; cursor: pointer; transition: .2s var(--ease); min-height: 38px; }
-  .copy-btn:hover { background: var(--text); color: var(--bg); }
-  .copy-btn.done { background: var(--text); color: var(--bg); }
-  .pay-warn { margin-top: 10px; font-size: .74rem; color: #d9d9d9; line-height: 1.4; }
-  .pay-input { width: 100%; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; color: var(--text); font: inherit; font-size: 16px; outline: none; }
-  .pay-input:focus { border-color: var(--text); }
-  .pay-note { color: var(--muted); font-size: .82rem; margin: 16px 0; line-height: 1.45; }
-  .pay-hint { color: var(--muted); font-size: .78rem; text-align: center; margin-top: 8px; }
-  .qr-img { width: 200px; height: 200px; display: block; margin: 10px auto 0; background: #fff; padding: 10px; border-radius: 10px; }
+  .modal .pay-item { text-align: left; margin-bottom: 12px; padding: 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
+  .modal .pay-label { font-size: .72rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+  .modal .copy-row { display: flex; align-items: center; gap: 10px; }
+  .modal .copy-val { flex: 1; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .95rem; word-break: break-all; user-select: all; color: var(--text); }
+  .modal .copy-val.small { font-size: .72rem; }
+  .modal .copy-btn { flex-shrink: 0; padding: 8px 12px; background: none; border: 1px solid var(--line-strong); color: var(--text); border-radius: 8px; font-size: .78rem; cursor: pointer; min-height: 38px; }
+  .modal .copy-btn:hover { background: var(--text); color: var(--bg); }
+  .modal .copy-btn.done { background: var(--text); color: var(--bg); }
+  .modal .pay-warn { margin-top: 8px; font-size: .72rem; color: #d9d9d9; line-height: 1.4; }
+  .modal .qr-img { width: 190px; height: 190px; display: block; margin: 8px auto 0; background: #fff; padding: 8px; border-radius: 10px; }
+  .modal .pay-hint { color: var(--muted); font-size: .74rem; text-align: center; margin-top: 6px; }
+  .modal .pay-input { width: 100%; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; color: var(--text); font: inherit; font-size: 16px; outline: none; }
+  .modal .pay-input:focus { border-color: var(--text); }
+  .modal .pay-note { color: var(--muted); font-size: .8rem; margin: 12px 0 16px; line-height: 1.45; }
 
   .toast { position: fixed; bottom: calc(26px + var(--safe-bottom)); left: 50%; transform: translate(-50%, 24px); z-index: 120; opacity: 0; pointer-events: none; background: var(--text); color: var(--bg); padding: 12px 20px; border-radius: 999px; font-size: .88rem; font-weight: 500; transition: .35s var(--ease); max-width: calc(90vw - var(--safe-left) - var(--safe-right)); text-align: center; }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  /* Chat (tickets) */
+  .chat-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .chat-box { display: flex; flex-direction: column; height: 420px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; -webkit-overflow-scrolling: touch; }
+  .msg { max-width: 82%; padding: 10px 13px; border-radius: 12px; font-size: .88rem; line-height: 1.45; word-wrap: break-word; }
+  .msg.bot { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--line); color: var(--muted); border-bottom-left-radius: 4px; font-style: italic; }
+  .msg.user { align-self: flex-end; background: var(--text); color: var(--bg); border-bottom-right-radius: 4px; }
+  .msg.admin { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--line-strong); color: var(--text); border-bottom-left-radius: 4px; }
+  .msg .meta { display: block; font-size: .68rem; opacity: .7; margin-top: 4px; }
+  .msg img { max-width: 100%; border-radius: 6px; display: block; margin-top: 6px; }
+  .chat-form { display: flex; flex-direction: column; gap: 8px; padding: 10px; border-top: 1px solid var(--line); background: var(--surface); }
+  .chat-form textarea { width: 100%; min-height: 60px; padding: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; color: var(--text); font: inherit; font-size: 16px; resize: vertical; outline: none; }
+  .chat-form textarea:focus { border-color: var(--text); }
+  .chat-form .row { display: flex; gap: 8px; align-items: center; }
+  .chat-form .file-label { flex: 1; padding: 10px 12px; border: 1px dashed var(--line-strong); border-radius: 8px; color: var(--muted); font-size: .82rem; cursor: pointer; text-align: center; }
+  .chat-form .file-label:hover { color: var(--text); border-color: var(--text); }
+  .chat-form input[type="file"] { display: none; }
+  .chat-form button { padding: 10px 16px; background: var(--text); color: var(--bg); border: 0; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  .ticket-list { display: flex; flex-direction: column; gap: 10px; }
+  .ticket-card { padding: 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; cursor: pointer; transition: .2s var(--ease); }
+  .ticket-card:hover { border-color: var(--line-strong); background: var(--surface-2); }
+  .ticket-card .subj { font-weight: 600; margin-bottom: 4px; }
+  .ticket-card .meta { color: var(--muted); font-size: .78rem; display: flex; justify-content: space-between; gap: 8px; }
+  .ticket-card .badge-new { background: var(--badge); color: #fff; font-size: .65rem; padding: 1px 6px; border-radius: 999px; font-weight: 700; }
+  .status-pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: .7rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .status-pill.pending { background: #3a2a00; color: #ffcc66; }
+  .status-pill.approved { background: #0f3a1f; color: #7dff9d; }
+  .status-pill.rejected { background: #3a1010; color: #ff8080; }
+  .status-pill.open { background: #3a2a00; color: #ffcc66; }
+  .status-pill.answered { background: #1a2a3a; color: #8ec4ff; }
+  .status-pill.closed { background: #1a1a1a; color: var(--muted); }
 
   footer { text-align: center; color: #5a5a5a; font-size: .72rem; padding: 24px 20px calc(28px + var(--safe-bottom)); max-width: 640px; margin: 0 auto; }
 
@@ -219,57 +267,27 @@
     nav { order: 3; width: 100%; justify-content: center; }
     .user-chip span { display: none; }
     main { padding: 32px 16px calc(40px + var(--safe-bottom)); }
-    .feature { padding: 32px 22px; }
-    .plan { padding: 30px 16px 20px; }
-    .plan .price { font-size: 1.7rem; }
-    .howto { margin-top: 44px; padding: 26px 22px; }
-    .modal { padding: 26px 20px; }
-    .panel-head { padding: 16px 18px; }
-    .pbody { padding: 20px 18px; }
   }
   @media (max-width: 640px) {
     .pricing { grid-template-columns: 1fr; }
     .region-note { margin-top: -22px; }
     h1 { font-size: clamp(1.6rem, 8vw, 2.1rem); }
     .sub { margin-bottom: 28px; }
-    .qr-img { width: 180px; height: 180px; }
+    .qr-img { width: 160px; height: 160px; }
   }
   @media (max-width: 600px) {
     .card { padding: 22px 18px; }
     .howto { padding: 22px 18px; }
     .modal { padding: 22px 16px; }
-    .btn { padding: 14px; font-size: .92rem; }
-    .feature { padding: 28px 20px; }
-    .feature .icon { width: 64px; height: 64px; margin-bottom: 18px; }
-    .feature .icon svg { width: 28px; height: 28px; }
-    .howto ol li { font-size: .9rem; padding-left: 42px; }
-    .howto ol li::before { width: 26px; height: 26px; font-size: .75rem; }
-    .copy-val { font-size: .9rem; }
-    .copy-val.small { font-size: .68rem; }
   }
   @media (max-width: 380px) {
     header { padding-left: 12px; padding-right: 12px; }
     .logo { font-size: .8rem; letter-spacing: .14em; }
-    .burger { width: 42px; height: 42px; }
     main { padding-left: 12px; padding-right: 12px; }
     .card { padding: 18px 14px; }
-    .howto { padding: 18px 14px; }
-    .ptabs { padding: 12px 14px 0; }
-    .ptabs button { font-size: .78rem; padding: 8px 11px; }
-  }
-  @media (max-height: 500px) and (orientation: landscape) {
-    main { padding-top: 20px; padding-bottom: 20px; }
-    .modal { padding: 20px; }
-    .modal .tick { margin-bottom: 10px; }
-    .modal > p { margin-bottom: 14px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-  }
-  @media (hover: none) {
-    .btn:active { transform: scale(.97); }
-    .plan:active { transform: scale(.99); }
-    .feature:active { transform: scale(.99); }
   }
 </style>
 </head>
@@ -286,11 +304,15 @@
       <span id="userEmail"></span>
       <button id="logoutBtn" data-i18n="logout">Log out</button>
     </div>
-    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+      <i class="dot" id="burgerDot"></i>
+    </button>
   </div>
 </header>
 
 <main>
+  <!-- ============ PAGE 1: Auth ============ -->
   <section class="page" id="page-auth">
     <div class="eyebrow" data-i18n="auth_eyebrow">Account</div>
     <h1 data-i18n="auth_title">Welcome</h1>
@@ -336,6 +358,7 @@
     </div>
   </section>
 
+  <!-- ============ PAGE 2: Features ============ -->
   <section class="page wide" id="page-features">
     <div class="eyebrow" data-i18n="f_eyebrow">Features</div>
     <h1 data-i18n="f_title">Why EyeStacks?</h1>
@@ -358,6 +381,7 @@
     <div class="cta-row"><button class="btn" data-go="buy" data-i18n="f_cta">Get access</button></div>
   </section>
 
+  <!-- ============ PAGE 3: Purchase ============ -->
   <section class="page wide" id="page-buy">
     <div class="eyebrow" data-i18n="b_eyebrow">Pricing</div>
     <h1 data-i18n="b_title">Buy EyeStacks</h1>
@@ -382,34 +406,77 @@
 
 <footer data-i18n="footer">Unofficial demo storefront. Not affiliated with, endorsed by, or sponsored by EyeStacks or its owners. No real payments are processed.</footer>
 
+<!-- ============ Side panel ============ -->
 <div class="overlay" id="overlay"></div>
 <aside class="panel" id="panel" aria-hidden="true">
-  <div class="panel-head"><h2 data-i18n="menu">Menu</h2><button class="close-x" id="panelClose" aria-label="Close">×</button></div>
-  <div class="ptabs" id="ptabs">
-    <button class="active" data-tab="support" data-i18n="tab_support">Support</button>
-    <button data-tab="telegram" data-i18n="tab_telegram">Telegram channel</button>
-    <button data-tab="about" data-i18n="tab_about">About EyeStacks</button>
-    <button data-tab="promo" data-i18n="tab_promo">Promo Code</button>
-    <button data-tab="lang" data-i18n="tab_lang">Language</button>
+  <div class="panel-head">
+    <h2 data-i18n="menu">Menu</h2>
+    <button class="close-x" id="panelClose" aria-label="Close">×</button>
   </div>
   <div class="pbody">
-    <div class="tab-content active" id="tab-support">
+
+    <!-- Main menu list -->
+    <div id="menuMain" class="menu-list">
+      <!-- Pinned: personal messages (visible only if logged in) -->
+      <button class="menu-item pinned" id="menuMessages" style="display:none;">
+        <span class="left"><span class="icon">📩</span><span data-i18n="menu_messages">Личные сообщения</span></span>
+        <span class="cnt hidden" id="msgCnt">0</span>
+      </button>
+
+      <button class="menu-item" data-sub="support">
+        <span class="left"><span class="icon">💬</span><span data-i18n="tab_support">Support</span></span>
+      </button>
+      <a class="menu-item" href="https://t.me/" target="_blank" rel="noopener">
+        <span class="left"><span class="icon">✈️</span><span data-i18n="tab_telegram">Telegram channel</span></span>
+      </a>
+      <button class="menu-item" data-sub="about">
+        <span class="left"><span class="icon">ℹ️</span><span data-i18n="tab_about">About EyeStacks</span></span>
+      </button>
+      <button class="menu-item" data-sub="promo">
+        <span class="left"><span class="icon">🎟️</span><span data-i18n="tab_promo">Promo Code</span></span>
+      </button>
+      <button class="menu-item" data-sub="lang">
+        <span class="left"><span class="icon">🌐</span><span data-i18n="tab_lang">Language</span></span>
+      </button>
+    </div>
+
+    <!-- SUBPAGE: support -->
+    <div class="subpage" id="sub-support">
+      <button class="back" data-back>← <span data-i18n="back">Back</span></button>
       <h3 data-i18n="support_title">Support</h3>
-      <p data-i18n="support_text">Describe your issue and we will get back to you. (Demo form — messages are not actually sent.)</p>
-      <div class="field"><textarea id="supportText" data-i18n-ph="support_ph" placeholder="How can we help?"></textarea></div>
-      <button class="btn" id="supportSend" data-i18n="support_send">Send message</button>
+      <p data-i18n="support_text">Describe your issue and we will get back to you.</p>
+
+      <form id="ticketForm">
+        <div class="field">
+          <label data-i18n="ticket_subject">Subject</label>
+          <input type="text" id="ticketSubject" data-i18n-ph="ticket_subject_ph" placeholder="Help with installation" maxlength="120">
+        </div>
+        <div class="field">
+          <label data-i18n="ticket_text">Your message</label>
+          <textarea id="ticketText" data-i18n-ph="ticket_text_ph" placeholder="Describe your problem..."></textarea>
+        </div>
+        <div class="field">
+          <label data-i18n="ticket_attach">Screenshot (optional)</label>
+          <label class="file-label" for="ticketFile" id="fileLabel" data-i18n="ticket_attach_btn">+ Attach screenshot</label>
+          <input type="file" id="ticketFile" accept="image/*">
+          <div class="hint" id="fileHint"></div>
+        </div>
+        <button class="btn" type="submit" data-i18n="ticket_send">Send ticket</button>
+        <div class="form-msg" id="ticketMsg"></div>
+      </form>
     </div>
-    <div class="tab-content" id="tab-telegram">
-      <h3 data-i18n="tg_title">Telegram channel</h3>
-      <p data-i18n="tg_text">News, updates and announcements. Replace this link with your real channel.</p>
-      <a class="btn" href="https://t.me/" target="_blank" rel="noopener" data-i18n="tg_btn">Open Telegram</a>
-    </div>
-    <div class="tab-content" id="tab-about">
+
+    <!-- SUBPAGE: about -->
+    <div class="subpage" id="sub-about">
+      <button class="back" data-back>← <span data-i18n="back">Back</span></button>
       <h3 data-i18n="about_title">About EyeStacks</h3>
       <p data-i18n="about_p1">EyeStacks is an Android app player for PC. This site offers time-limited access to performance tuning for it: higher FPS, lower input lag and familiar mouse sensitivity.</p>
-      <p data-i18n="about_p2">This is an independent, unofficial demo storefront. It is not affiliated with EyeStacks or its owners.</p>
+      <p data-i18n="about_p2">This is an independent, unofficial demo storefront.</p>
     </div>
-    <div class="tab-content" id="tab-promo">
+
+    <!-- SUBPAGE: promo -->
+    <div class="subpage" id="sub-promo">
+      <button class="back" data-back>← <span data-i18n="back">Back</span></button>
       <h3 data-i18n="promo_title">Promo Code</h3>
       <p data-i18n="promo_text">Enter a promo code to apply a discount on the Buy page.</p>
       <form id="promoForm" novalidate>
@@ -418,7 +485,10 @@
         <div class="form-msg" id="promoMsg"></div>
       </form>
     </div>
-    <div class="tab-content" id="tab-lang">
+
+    <!-- SUBPAGE: language -->
+    <div class="subpage" id="sub-lang">
+      <button class="back" data-back>← <span data-i18n="back">Back</span></button>
       <h3 data-i18n="lang_title">Language</h3>
       <p data-i18n="lang_text">Choose the language of the whole site.</p>
       <div class="lang-row" id="langRow">
@@ -426,60 +496,117 @@
         <button data-lang="ru">Русский</button>
       </div>
     </div>
+
+    <!-- SUBPAGE: messages (chat with admin) -->
+    <div class="subpage" id="sub-messages">
+      <button class="back" data-back>← <span data-i18n="back">Back</span></button>
+      <h3 data-i18n="messages_title">Личные сообщения</h3>
+      <p data-i18n="messages_text">Здесь ответы от администрации на ваши обращения.</p>
+      <div id="ticketList" class="ticket-list"></div>
+    </div>
+
+    <!-- SUBPAGE: chat (specific ticket thread) -->
+    <div class="subpage" id="sub-chat">
+      <button class="back" data-back>← <span data-i18n="back">Back</span></button>
+      <h3 id="chatSubject"></h3>
+      <div class="chat-wrap">
+        <div class="chat-box">
+          <div class="chat-messages" id="chatMessages"></div>
+          <form class="chat-form" id="chatForm">
+            <textarea id="chatText" data-i18n-ph="chat_ph" placeholder="Type a message..."></textarea>
+            <div class="row">
+              <label class="file-label" for="chatFile" id="chatFileLabel" data-i18n="chat_attach">+ Screenshot</label>
+              <input type="file" id="chatFile" accept="image/*">
+              <button type="submit" data-i18n="chat_send">Send</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
   </div>
 </aside>
 
-<!-- Purchase popup with payment methods -->
+<!-- ============ Purchase popup (заявка) ============ -->
 <div class="modal-wrap" id="modalWrap">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="tick">✓</div>
-    <h3 data-i18n="thanks_title">Thank you for your purchase!</h3>
+    <h3 data-i18n="thanks_title">Оформление заявки</h3>
     <div class="what" id="modalWhat"></div>
-    <p data-i18n="pay_choose">Choose a payment method below</p>
+    <p data-i18n="pay_choose">Выберите способ оплаты и переведите указанную сумму. После оплаты нажмите «Я оплатил» — мы проверим платёж и выдадим доступ.</p>
 
-    <!-- SBP QR -->
     <div class="pay-item">
-      <div class="pay-label" data-i18n="pay_sbp">SBP (QR code)</div>
+      <div class="pay-label" data-i18n="pay_sbp">СБП (QR-код)</div>
       <img src="./qr-sbp.png" alt="SBP QR" class="qr-img">
-      <p class="pay-hint" data-i18n="pay_sbp_hint">Scan the QR in your banking app</p>
+      <p class="pay-hint" data-i18n="pay_sbp_hint">Отсканируйте QR в приложении банка</p>
     </div>
 
-    <!-- Sberbank card -->
     <div class="pay-item">
-      <div class="pay-label" data-i18n="pay_card">Sberbank card</div>
+      <div class="pay-label" data-i18n="pay_card">Карта Сбербанка</div>
       <div class="copy-row">
         <span class="copy-val">2202 2085 1960 9235</span>
-        <button class="copy-btn" data-copy="2202208519609235" data-i18n="copy">Copy</button>
+        <button class="copy-btn" data-copy="2202208519609235" data-i18n="copy">Копировать</button>
       </div>
     </div>
 
-    <!-- USDT TON -->
     <div class="pay-item">
-      <div class="pay-label" data-i18n="pay_usdt">USDT (TON network only)</div>
+      <div class="pay-label" data-i18n="pay_usdt">USDT (только сеть TON)</div>
       <div class="copy-row">
         <span class="copy-val small">UQBci5BUwuh6Gj0OogWChOKQWxUGWr3QChIe2xIGg9cLhjj4</span>
-        <button class="copy-btn" data-copy="UQBci5BUwuh6Gj0OogWChOKQWxUGWr3QChIe2xIGg9cLhjj4" data-i18n="copy">Copy</button>
+        <button class="copy-btn" data-copy="UQBci5BUwuh6Gj0OogWChOKQWxUGWr3QChIe2xIGg9cLhjj4" data-i18n="copy">Копировать</button>
       </div>
-      <div class="pay-warn" data-i18n="pay_usdt_warn">⚠ Send USDT only in TON network. Other networks will lose funds.</div>
+      <div class="pay-warn" data-i18n="pay_usdt_warn">⚠ Отправляйте USDT только в сети TON. В других сетях средства потеряются.</div>
     </div>
 
-    <!-- Contact -->
     <div class="pay-item">
-      <div class="pay-label" data-i18n="pay_contact">Your contact (email or Telegram)</div>
-      <input type="text" id="buyerContact" class="pay-input" data-i18n-ph="pay_contact_ph" placeholder="@username or you@example.com" autocomplete="off">
+      <div class="pay-label" data-i18n="pay_contact">Ваш контакт (email или Telegram)</div>
+      <input type="text" id="buyerContact" class="pay-input" data-i18n-ph="pay_contact_ph" placeholder="@username или you@example.com" autocomplete="off">
     </div>
 
-    <p class="pay-note" data-i18n="pay_note">After payment, send the receipt to our Telegram. Access will be sent within 24 hours.</p>
+    <p class="pay-note" data-i18n="pay_note">После отправки заявки статус можно посмотреть в «Личных сообщениях».</p>
 
-    <a class="btn" id="downloadActivator" href="./EyeStacks.zip" download="EyeStacks.zip" data-i18n="download_activator">Download EyeStacks</a>
-    <a class="btn ghost" href="https://t.me/" target="_blank" rel="noopener" data-i18n="pay_tg">Open Telegram</a>
-    <button class="btn ghost" id="modalClose" data-i18n="close">Close</button>
+    <button class="btn" id="submitOrder" data-i18n="pay_submit">Я оплатил — отправить заявку</button>
+    <button class="btn ghost" id="modalClose" data-i18n="close">Закрыть</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script>
+<!-- ============ Firebase SDK (CDN) ============ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc,
+  query, where, orderBy, serverTimestamp, onSnapshot, increment
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+/* =========================================================
+   Firebase config (твой проект)
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyCxUuKy8rPswCpbDJLC3M-1kyJQ5BmMPJ4",
+  authDomain: "eyestacks-ed914.firebaseapp.com",
+  projectId: "eyestacks-ed914",
+  storageBucket: "eyestacks-ed914.firebasestorage.app",
+  messagingSenderId: "101222128701",
+  appId: "1:101222128701:web:bcFfc8dc33ed2280c7f7c4",
+  measurementId: "G-QMBMYX4X8"
+};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+// Делаем доступными для не-module скрипта ниже через window
+window.__fb = { db, auth, collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, query, where, orderBy, serverTimestamp, onSnapshot, increment, signOut };
+
+/* =========================================================
+   i18n EN / RU
+   ========================================================= */
 const I18N = {
   en: {
     nav_features: "Features", nav_buy: "Buy", logout: "Log out", menu: "Menu",
@@ -510,10 +637,10 @@ const I18N = {
     b_region: "Region", b_prices_in: "prices in",
     plan_trial: "3-day trial", plan_week: "One week", plan_month: "One month", plan_year: "One year", plan_life: "Lifetime",
     dur_trial: "3 days", dur_week: "7 days", dur_month: "30 days", dur_year: "365 days", dur_life: "No expiration",
-    badge_popular: "Popular", badge_best: "Best Value",
+    badge_popular: "Popular", badge_best: "Best Value", badge_promo: "PROMO",
     btn_buy: "Buy", free: "Free",
-    thanks_title: "Thank you for your purchase!", close: "Close",
-    download_activator: "Download EyeStacks",
+    thanks_title: "Place an order",
+    close: "Close",
     how_title: "How to activate",
     how_1: "Buy any plan",
     how_2: "Download the archive",
@@ -521,33 +648,58 @@ const I18N = {
     how_4: "Enter your activation key",
     how_5: "The download will start automatically",
     how_hint: "Demo key: test",
-    tab_support: "Support", tab_telegram: "Telegram channel", tab_about: "About EyeStacks", tab_promo: "Promo Code", tab_lang: "Language",
+    tab_support: "Support", tab_telegram: "Telegram channel", tab_about: "About EyeStacks",
+    tab_promo: "Promo Code", tab_lang: "Language", back: "Back",
+    menu_messages: "Personal messages",
+    messages_title: "Personal messages",
+    messages_text: "Here you'll find replies from the administration to your tickets.",
     support_title: "Support",
-    support_text: "Describe your issue and we will get back to you. (Demo form — messages are not actually sent.)",
-    support_ph: "How can we help?", support_send: "Send message",
-    support_empty: "Please write a message first", support_sent: "Message received (demo)",
-    tg_title: "Telegram channel", tg_text: "News, updates and announcements. Replace this link with your real channel.", tg_btn: "Open Telegram",
-    about_title: "About EyeStacks",
-    about_p1: "EyeStacks is an Android app player for PC. This site offers time-limited access to performance tuning for it: higher FPS, lower input lag and familiar mouse sensitivity.",
-    about_p2: "This is an independent, unofficial demo storefront. It is not affiliated with EyeStacks or its owners.",
-    promo_title: "Promo Code", promo_text: "Enter a promo code to apply a discount on the Buy page.",
-    promo_ph: "Enter promo code", promo_apply: "Apply",
-    promo_empty: "Please enter a promo code.", promo_bad: "Invalid promo code.",
-    promo_ok_percent: "Success! {p}% off all plans.", promo_ok_free: "Success! The 3-day trial is free.",
-    promo_active: "Promo {code} applied", promo_remove: "Remove",
+    support_text: "Describe your issue and we will get back to you.",
+    ticket_subject: "Subject",
+    ticket_subject_ph: "Help with installation",
+    ticket_text: "Your message",
+    ticket_text_ph: "Describe your problem...",
+    ticket_attach: "Screenshot (optional)",
+    ticket_attach_btn: "+ Attach screenshot",
+    ticket_send: "Send ticket",
+    ticket_sent: "Ticket created. Check Personal messages.",
+    ticket_need_subj: "Please enter a subject",
+    ticket_need_text: "Please describe your problem",
+    ticket_login: "Please log in to send a ticket",
+    img_too_big: "Image too big, try another",
+    img_processing: "Processing…",
+    bot_offline: "Сейчас администратор не в сети. Как только зайдёт — сразу ответит на ваш вопрос и поможет с решением.",
+    bot_online: "Администратор сейчас на связи и уже получил ваше обращение. Ответим в течение нескольких минут.",
+    promo_title: "Promo Code",
+    promo_text: "Enter a promo code to apply a discount on the Buy page.",
+    promo_ph: "Enter promo code",
+    promo_apply: "Apply",
+    promo_empty: "Please enter a promo code.",
+    promo_bad: "Invalid, expired or used up code.",
+    promo_ok: "Promo applied: {desc}",
+    promo_active: "Promo {code} applied · {desc}",
+    promo_remove: "Remove",
     lang_title: "Language", lang_text: "Choose the language of the whole site.",
-    footer: "Unofficial demo storefront. Not affiliated with, endorsed by, or sponsored by EyeStacks or its owners. No real payments are processed.",
-    pay_choose: "Choose a payment method below",
-    pay_sbp: "SBP (QR code)",
-    pay_sbp_hint: "Scan the QR in your banking app",
+    footer: "Unofficial demo storefront. Not affiliated with EyeStacks or its owners.",
+    pay_choose: "Choose a payment method and transfer the amount. Then press \"I paid\" — we will check and give access.",
+    pay_sbp: "SBP (QR code)", pay_sbp_hint: "Scan the QR in your banking app",
     pay_card: "Sberbank card",
     pay_usdt: "USDT (TON network only)",
     pay_usdt_warn: "⚠ Send USDT only in TON network. Other networks will lose funds.",
     pay_contact: "Your contact (email or Telegram)",
     pay_contact_ph: "@username or you@example.com",
-    pay_note: "After payment, send the receipt to our Telegram. Access will be sent within 24 hours.",
-    pay_tg: "Open Telegram",
-    copy: "Copy", copy_done: "Copied"
+    pay_note: "After submission, check the status in Personal messages.",
+    pay_submit: "I paid — submit order",
+    order_sent: "Order submitted. Await approval.",
+    order_need_contact: "Please enter your contact",
+    order_need_login: "Please log in first",
+    copy: "Copy", copy_done: "Copied",
+    chat_ph: "Type a message...",
+    chat_send: "Send",
+    chat_attach: "+ Screenshot",
+    chat_empty: "No tickets yet.",
+    status_pending: "pending", status_approved: "approved", status_rejected: "rejected",
+    status_open: "open", status_answered: "answered", status_closed: "closed"
   },
   ru: {
     nav_features: "Преимущества", nav_buy: "Купить", logout: "Выйти", menu: "Меню",
@@ -578,10 +730,10 @@ const I18N = {
     b_region: "Регион", b_prices_in: "цены в",
     plan_trial: "Пробный на 3 дня", plan_week: "Одна неделя", plan_month: "Один месяц", plan_year: "Один год", plan_life: "Навсегда",
     dur_trial: "3 дня", dur_week: "7 дней", dur_month: "30 дней", dur_year: "365 дней", dur_life: "Без ограничения срока",
-    badge_popular: "Популярный", badge_best: "Лучшая цена",
+    badge_popular: "Популярный", badge_best: "Лучшая цена", badge_promo: "АКЦИЯ",
     btn_buy: "Купить", free: "Бесплатно",
-    thanks_title: "Спасибо за покупку!", close: "Закрыть",
-    download_activator: "Скачать EyeStacks",
+    thanks_title: "Оформление заявки",
+    close: "Закрыть",
     how_title: "Как активировать",
     how_1: "Купите любой тариф",
     how_2: "Скачайте архив",
@@ -589,38 +741,61 @@ const I18N = {
     how_4: "Введите ключ активации",
     how_5: "Загрузка начнётся автоматически",
     how_hint: "Демо-ключ: test",
-    tab_support: "Поддержка", tab_telegram: "Telegram-канал", tab_about: "О EyeStacks", tab_promo: "Промокод", tab_lang: "Язык",
+    tab_support: "Поддержка", tab_telegram: "Telegram-канал", tab_about: "О EyeStacks",
+    tab_promo: "Промокод", tab_lang: "Язык", back: "Назад",
+    menu_messages: "Личные сообщения",
+    messages_title: "Личные сообщения",
+    messages_text: "Здесь ответы от администрации на ваши обращения.",
     support_title: "Поддержка",
-    support_text: "Опишите проблему, и мы ответим вам. (Демо-форма — сообщения на самом деле не отправляются.)",
-    support_ph: "Чем мы можем помочь?", support_send: "Отправить сообщение",
-    support_empty: "Сначала напишите сообщение", support_sent: "Сообщение получено (демо)",
-    tg_title: "Telegram-канал", tg_text: "Новости, обновления и объявления. Замените эту ссылку на ваш реальный канал.", tg_btn: "Открыть Telegram",
-    about_title: "О EyeStacks",
-    about_p1: "EyeStacks — это эмулятор Android-приложений для ПК. На этом сайте продаётся доступ на ограниченный срок к настройке производительности: выше FPS, меньше задержка ввода и привычная чувствительность мыши.",
-    about_p2: "Это независимая неофициальная демонстрационная витрина. Она не связана с EyeStacks и его владельцами.",
-    promo_title: "Промокод", promo_text: "Введите промокод, чтобы получить скидку на странице покупки.",
-    promo_ph: "Введите промокод", promo_apply: "Применить",
-    promo_empty: "Пожалуйста, введите промокод.", promo_bad: "Неверный промокод.",
-    promo_ok_percent: "Готово! Скидка {p}% на все тарифы.", promo_ok_free: "Готово! Пробный период на 3 дня бесплатно.",
-    promo_active: "Промокод {code} применён", promo_remove: "Убрать",
+    support_text: "Опишите проблему, и мы ответим вам.",
+    ticket_subject: "Тема",
+    ticket_subject_ph: "Помогите с установкой",
+    ticket_text: "Ваше сообщение",
+    ticket_text_ph: "Опишите проблему...",
+    ticket_attach: "Скриншот (по желанию)",
+    ticket_attach_btn: "+ Прикрепить скриншот",
+    ticket_send: "Отправить тикет",
+    ticket_sent: "Тикет создан. Проверьте Личные сообщения.",
+    ticket_need_subj: "Введите тему",
+    ticket_need_text: "Опишите проблему",
+    ticket_login: "Войдите, чтобы отправить тикет",
+    img_too_big: "Картинка слишком большая, попробуйте другую",
+    img_processing: "Обработка…",
+    bot_offline: "Сейчас администратор не в сети. Как только зайдёт — сразу ответит на ваш вопрос и поможет с решением.",
+    bot_online: "Администратор сейчас на связи и уже получил ваше обращение. Ответим в течение нескольких минут.",
+    promo_title: "Промокод",
+    promo_text: "Введите промокод, чтобы получить скидку на странице покупки.",
+    promo_ph: "Введите промокод",
+    promo_apply: "Применить",
+    promo_empty: "Пожалуйста, введите промокод.",
+    promo_bad: "Неверный, истёкший или исчерпанный промокод.",
+    promo_ok: "Промокод применён: {desc}",
+    promo_active: "Промокод {code} применён · {desc}",
+    promo_remove: "Убрать",
     lang_title: "Язык", lang_text: "Выберите язык всего сайта.",
-    footer: "Неофициальная демонстрационная витрина. Не связана с EyeStacks и его владельцами и не одобрена ими. Реальные платежи не принимаются.",
-    pay_choose: "Выберите способ оплаты",
-    pay_sbp: "СБП (QR-код)",
-    pay_sbp_hint: "Отсканируйте QR в приложении банка",
+    footer: "Неофициальная демонстрационная витрина. Не связана с EyeStacks и его владельцами.",
+    pay_choose: "Выберите способ оплаты и переведите указанную сумму. После оплаты нажмите «Я оплатил» — мы проверим платёж и выдадим доступ.",
+    pay_sbp: "СБП (QR-код)", pay_sbp_hint: "Отсканируйте QR в приложении банка",
     pay_card: "Карта Сбербанка",
     pay_usdt: "USDT (только сеть TON)",
     pay_usdt_warn: "⚠ Отправляйте USDT только в сети TON. В других сетях средства потеряются.",
     pay_contact: "Ваш контакт (email или Telegram)",
     pay_contact_ph: "@username или you@example.com",
-    pay_note: "После оплаты пришлите чек в наш Telegram. Доступ вышлем в течение 24 часов.",
-    pay_tg: "Открыть Telegram",
-    copy: "Копировать", copy_done: "Скопировано"
+    pay_note: "После отправки заявки статус можно посмотреть в «Личных сообщениях».",
+    pay_submit: "Я оплатил — отправить заявку",
+    order_sent: "Заявка отправлена. Ожидайте подтверждения.",
+    order_need_contact: "Укажите ваш контакт",
+    order_need_login: "Сначала войдите",
+    copy: "Копировать", copy_done: "Скопировано",
+    chat_ph: "Введите сообщение...",
+    chat_send: "Отправить",
+    chat_attach: "+ Скриншот",
+    chat_empty: "Тикетов пока нет.",
+    status_pending: "на рассмотрении", status_approved: "одобрена", status_rejected: "отклонена",
+    status_open: "открыт", status_answered: "отвечен", status_closed: "закрыт"
   }
 };
 
-const LS_USERS = "es_users";
-const LS_SESSION = "es_session";
 const LS_LANG = "es_lang";
 const LS_REGION = "es_region";
 const LS_PROMO = "es_promo";
@@ -636,28 +811,34 @@ const t = (key, vars) => {
   return s;
 };
 
-function loadJSON(k, fb) { try { return JSON.parse(localStorage.getItem(k)) ?? fb; } catch { return fb; } }
-function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
-const getSession = () => loadJSON(LS_SESSION, null);
-
-async function hashPassword(pw) {
-  try {
-    if (window.crypto && crypto.subtle) {
-      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pw));
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
-    }
-  } catch {}
-  let h = 0;
-  for (let i = 0; i < pw.length; i++) h = (h * 31 + pw.charCodeAt(i)) | 0;
-  return "f" + h;
-}
+/* =========================================================
+   Auth state
+   ========================================================= */
+let currentUser = null;
+let currentUserData = null;
 
 function toast(msg) {
   const el = $("#toast");
   el.textContent = msg; el.classList.add("show");
-  clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("show"), 2400);
+  clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("show"), 2600);
 }
 
+function updateUserChip() {
+  const email = currentUser ? currentUser.email : null;
+  $("#userChip").classList.toggle("show", !!email);
+  $("#mainNav").classList.toggle("show", !!email);
+  $("#userEmail").textContent = email || "";
+  $("#menuMessages").style.display = email ? "flex" : "none";
+}
+window.updateUserChip = updateUserChip;
+
+$("#logoutBtn").addEventListener("click", async () => {
+  await window.__fb.signOut(window.__fb.auth);
+});
+
+/* =========================================================
+   Password rules
+   ========================================================= */
 const COMMON = ["password", "qwerty", "123456", "12345678", "letmein", "admin", "welcome", "iloveyou", "abc123"];
 const RULES = [
   { key: "rule_len",     test: (p) => p.length >= 8 },
@@ -686,6 +867,9 @@ function updateRules() {
 const allRulesPass = (pw) => RULES.every(r => r.test(pw));
 $("#password").addEventListener("input", updateRules);
 
+/* =========================================================
+   Pricing
+   ========================================================= */
 const PLANS = [
   { id: "trial", name: "plan_trial", dur: "dur_trial" },
   { id: "week",  name: "plan_week",  dur: "dur_week" },
@@ -698,38 +882,76 @@ const REGIONS = {
   ru: { symbol: "₽", prices: [499, 1290, 2990, 14990, 24990] },
   ua: { symbol: "₴", prices: [199, 499, 1199, 5990, 9990] }
 };
-const PROMOS = {
-  BLUE10: { percent: 10 },
-  FREE3:  { freePlan: "trial" }
-};
+
+let promosCache = [];     // все активные промокоды, загруженные из Firestore
+let appliedPromo = null;  // { code, discountType, discountValue, appliesTo }
 
 function currentRegion() {
   let r = null;
   try { r = localStorage.getItem(LS_REGION); } catch {}
   return REGIONS[r] ? r : "us";
 }
-function activePromo() {
-  const code = loadJSON(LS_PROMO, null);
-  return code && PROMOS[code] ? { code, ...PROMOS[code] } : null;
+
+async function loadPromos() {
+  try {
+    const { db, collection, getDocs, query, where } = window.__fb;
+    const q = query(collection(db, "promos"), where("active", "==", true));
+    const snap = await getDocs(q);
+    promosCache = [];
+    snap.forEach(d => promosCache.push({ id: d.id, ...d.data() }));
+  } catch (e) {
+    console.warn("promos load failed", e);
+    promosCache = [];
+  }
 }
+
+function findPromo(code) {
+  code = (code || "").trim().toUpperCase();
+  if (!code) return null;
+  const p = promosCache.find(x => (x.code || "").toUpperCase() === code);
+  if (!p) return null;
+  // Срок действия
+  if (p.expiresAt) {
+    const exp = p.expiresAt.toDate ? p.expiresAt.toDate() : new Date(p.expiresAt);
+    if (Date.now() > exp.getTime()) return null;
+  }
+  // Лимит активаций (-1 = ∞)
+  if (typeof p.maxUses === "number" && p.maxUses !== -1) {
+    if ((p.usedCount || 0) >= p.maxUses) return null;
+  }
+  return p;
+}
+
+function promoDesc(p) {
+  if (!p) return "";
+  if (p.discountType === "percent") return "-" + p.discountValue + "%";
+  return "-" + p.discountValue + (currentRegion() === "us" ? "$" : (currentRegion() === "ua" ? "₴" : "₽"));
+}
+
+function promoApplies(p, planId) {
+  if (!p) return false;
+  if (!Array.isArray(p.appliesTo) || p.appliesTo.length === 0) return true; // на все
+  return p.appliesTo.includes(planId);
+}
+
 function finalPrice(plan, i, region) {
   const base = REGIONS[region].prices[i];
-  const promo = activePromo();
-  if (!promo) return base;
-  if (promo.freePlan === plan.id) return 0;
-  if (promo.percent) {
-    const v = base * (100 - promo.percent) / 100;
+  if (!appliedPromo) return base;
+  if (!promoApplies(appliedPromo, plan.id)) return base;
+  if (appliedPromo.discountType === "percent") {
+    const v = base * (100 - appliedPromo.discountValue) / 100;
     return region === "us" ? Math.round(v * 100) / 100 : Math.round(v);
   }
-  return base;
+  // fixed
+  const v = Math.max(0, base - appliedPromo.discountValue);
+  return region === "us" ? Math.round(v * 100) / 100 : Math.round(v);
 }
+
 function fmt(n, region) {
   if (n === 0) return t("free");
   if (region === "us") return "$" + n.toFixed(2);
   return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00A0") + "\u00A0" + REGIONS[region].symbol;
 }
-
-let promoMsg = null;
 
 function renderPricing() {
   const region = currentRegion();
@@ -738,44 +960,83 @@ function renderPricing() {
   PLANS.forEach((plan, i) => {
     const base = REGIONS[region].prices[i];
     const final = finalPrice(plan, i, region);
+    const hasDiscount = final !== base;
     const card = document.createElement("div");
-    card.className = "plan" + (plan.badge ? " hl" : "");
+    card.className = "plan" + (plan.badge ? " hl" : "") + (hasDiscount ? " discount" : "");
     card.innerHTML =
       (plan.badge ? `<div class="badge">${t(plan.badge)}</div>` : "") +
+      (hasDiscount ? `<div class="badge discount-badge" style="top:-11px;left:auto;right:8px;transform:none;">${promoDesc(appliedPromo)}</div>` : "") +
       `<h3>${t(plan.name)}</h3>` +
       `<div class="dur">${t(plan.dur)}</div>` +
       `<div class="price">${fmt(final, region)}</div>` +
-      `<div class="old">${final !== base ? fmt(base, region) : ""}</div>` +
+      `<div class="old">${hasDiscount ? fmt(base, region) : ""}</div>` +
       `<button class="btn" data-plan="${i}">${t("btn_buy")}</button>`;
     box.appendChild(card);
   });
 
   $("#regionNote").textContent = `${t("b_region")}: ${t("region_" + region)} · ${t("b_prices_in")} ${REGIONS[region].symbol}`;
 
-  const promo = activePromo();
   const banner = $("#promoBanner");
-  banner.classList.toggle("show", !!promo);
-  banner.innerHTML = promo ? `<span>✓ ${t("promo_active", { code: promo.code })}</span><button type="button" id="promoRemove">${t("promo_remove")}</button>` : "";
+  if (appliedPromo) {
+    banner.classList.add("show");
+    banner.innerHTML = `<span>✓ ${t("promo_active", { code: appliedPromo.code, desc: promoDesc(appliedPromo) })}</span><button type="button" id="promoRemove">${t("promo_remove")}</button>`;
+  } else {
+    banner.classList.remove("show");
+    banner.innerHTML = "";
+  }
 }
 
 $("#pricing").addEventListener("click", (e) => {
   const btn = e.target.closest("[data-plan]");
   if (!btn) return;
   const i = +btn.dataset.plan, region = currentRegion();
+  if (!currentUser) { toast(t("order_need_login")); showPage("auth"); return; }
   $("#modalWhat").textContent = `${t(PLANS[i].name)} — ${fmt(finalPrice(PLANS[i], i, region), region)}`;
+  $("#modalWrap").dataset.planIndex = i;
   $("#modalWrap").classList.add("show");
 });
 $("#promoBanner").addEventListener("click", (e) => {
   if (e.target.id === "promoRemove") {
+    appliedPromo = null;
     try { localStorage.removeItem(LS_PROMO); } catch {}
-    promoMsg = null; $("#promoMsg").textContent = "";
     renderPricing();
   }
 });
+
 const closeModal = () => $("#modalWrap").classList.remove("show");
 $("#modalClose").addEventListener("click", closeModal);
 $("#modalWrap").addEventListener("click", (e) => { if (e.target.id === "modalWrap") closeModal(); });
 
+/* =========================================================
+   SPA pages
+   ========================================================= */
+let currentPage = null;
+function showPage(name) {
+  if (name !== "auth" && !currentUser) name = "auth";
+  const next = $("#page-" + name);
+  if (!next || name === currentPage) return;
+  const prev = currentPage ? $("#page-" + currentPage) : null;
+  const swap = () => {
+    if (prev) prev.classList.remove("active", "visible");
+    if (name === "buy") renderPricing();
+    next.classList.add("active");
+    void next.offsetWidth;
+    next.classList.add("visible");
+    currentPage = name;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    $$("#mainNav button").forEach(b => b.classList.toggle("active", b.dataset.go === name));
+  };
+  if (prev) { prev.classList.remove("visible"); setTimeout(swap, 300); } else swap();
+}
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-go]");
+  if (el) showPage(el.dataset.go);
+});
+window.showPage = showPage;
+
+/* =========================================================
+   Language
+   ========================================================= */
 let authMode = "login";
 let errKeys = { email: null, pass: null, region: null };
 let msgKey = null;
@@ -805,29 +1066,9 @@ $("#langRow").addEventListener("click", (e) => {
   if (b) setLang(b.dataset.lang);
 });
 
-let currentPage = null;
-function showPage(name) {
-  if (name !== "auth" && !getSession()) name = "auth";
-  const next = $("#page-" + name);
-  if (!next || name === currentPage) return;
-  const prev = currentPage ? $("#page-" + currentPage) : null;
-  const swap = () => {
-    if (prev) prev.classList.remove("active", "visible");
-    if (name === "buy") renderPricing();
-    next.classList.add("active");
-    void next.offsetWidth;
-    next.classList.add("visible");
-    currentPage = name;
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    $$("#mainNav button").forEach(b => b.classList.toggle("active", b.dataset.go === name));
-  };
-  if (prev) { prev.classList.remove("visible"); setTimeout(swap, 300); } else swap();
-}
-document.addEventListener("click", (e) => {
-  const el = e.target.closest("[data-go]");
-  if (el) showPage(el.dataset.go);
-});
-
+/* =========================================================
+   Auth forms
+   ========================================================= */
 function clearErrors() {
   errKeys = { email: null, pass: null, region: null };
   msgKey = null;
@@ -845,7 +1086,6 @@ $$("#authTabs button").forEach(btn => btn.addEventListener("click", () => {
   clearErrors();
   applyLang();
 }));
-
 $("#region").addEventListener("change", (e) => {
   try { e.target.value ? localStorage.setItem(LS_REGION, e.target.value) : localStorage.removeItem(LS_REGION); } catch {}
   e.target.classList.remove("invalid"); errKeys.region = null; $("#regionHint").textContent = "";
@@ -873,97 +1113,85 @@ $("#authForm").addEventListener("submit", async (e) => {
   if (!email) { fail("email", "emailHint", "err_email_empty"); ok = false; }
   else if (!validEmail(email)) { fail("email", "emailHint", "err_email"); ok = false; }
 
-  const users = loadJSON(LS_USERS, {});
-
   if (authMode === "register") {
     const region = $("#region").value;
     if (!pass) { fail("password", "passHint", "err_pass_empty"); ok = false; }
     else if (!allRulesPass(pass)) { fail("password", "passHint", "err_pass_rules"); ok = false; }
     if (!region) { fail("region", "regionHint", "err_region"); ok = false; }
     if (!ok) return;
-    if (users[email]) { setAuthMsg("err_exists", false); return; }
 
-    users[email] = { hash: await hashPassword(pass), region, created: Date.now() };
-    saveJSON(LS_USERS, users);
-    saveJSON(LS_SESSION, email);
-    try { localStorage.setItem(LS_REGION, region); } catch {}
-    setAuthMsg("ok_register", true);
-    finishAuth(region);
+    try {
+      const { auth, createUserWithEmailAndPassword, db, doc, updateDoc } = window.__fb;
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      try { localStorage.setItem(LS_REGION, region); } catch {}
+      try {
+        // сохраняем регион в профиль (не критично)
+        const { setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        await setDoc(doc(db, "users", cred.user.uid), { email, region, createdAt: new Date() }, { merge: true });
+      } catch {}
+      setAuthMsg("ok_register", true);
+    } catch (err) {
+      console.error(err);
+      if (err.code === "auth/email-already-in-use") setAuthMsg("err_exists", false);
+      else setAuthMsg(err.message || "Error", false);
+    }
     return;
   }
 
   if (!pass) { fail("password", "passHint", "err_pass_empty"); ok = false; }
   if (!ok) return;
-  const hash = await hashPassword(pass);
-  if (!users[email] || users[email].hash !== hash) { setAuthMsg("err_creds", false); return; }
-  saveJSON(LS_SESSION, email);
-  const region = users[email].region;
-  if (region) { try { localStorage.setItem(LS_REGION, region); } catch {} }
-  setAuthMsg("ok_login", true);
-  finishAuth(region);
+  try {
+    const { auth, signInWithEmailAndPassword } = window.__fb;
+    await signInWithEmailAndPassword(auth, email, pass);
+    setAuthMsg("ok_login", true);
+  } catch (err) {
+    console.error(err);
+    setAuthMsg("err_creds", false);
+  }
 });
 
-function finishAuth(region) {
-  updateUserChip();
-  $("#authForm").reset();
-  if (region) $("#region").value = region;
-  updateRules();
-  setTimeout(() => { clearErrors(); showPage("features"); }, 900);
-}
+/* =========================================================
+   Buy — submit order
+   ========================================================= */
+$("#submitOrder").addEventListener("click", async () => {
+  if (!currentUser) { toast(t("order_need_login")); return; }
+  const contact = ($("#buyerContact").value || "").trim();
+  if (!contact) { toast(t("order_need_contact")); return; }
+  const i = +($("#modalWrap").dataset.planIndex || 0);
+  const region = currentRegion();
+  const plan = PLANS[i];
+  const basePrice = REGIONS[region].prices[i];
+  const finalP = finalPrice(plan, i, region);
 
-function updateUserChip() {
-  const email = getSession();
-  $("#userChip").classList.toggle("show", !!email);
-  $("#mainNav").classList.toggle("show", !!email);
-  $("#userEmail").textContent = email || "";
-}
-$("#logoutBtn").addEventListener("click", () => {
-  try { localStorage.removeItem(LS_SESSION); } catch {}
-  updateUserChip();
-  showPage("auth");
+  try {
+    const { db, collection, addDoc, serverTimestamp } = window.__fb;
+    await addDoc(collection(db, "orders"), {
+      email: currentUser.email,
+      uid: currentUser.uid,
+      plan: plan.id,
+      planName: t(plan.name),
+      region,
+      currency: REGIONS[region].symbol,
+      price: finalP,
+      basePrice,
+      promo: appliedPromo ? { code: appliedPromo.code, desc: promoDesc(appliedPromo) } : null,
+      contact,
+      status: "pending",
+      createdAt: serverTimestamp()
+    });
+    closeModal();
+    toast(t("order_sent"));
+    // Обновим список тикетов/личных сообщений — там появятся уведомления
+    await loadUserTickets();
+  } catch (err) {
+    console.error(err);
+    toast("Error: " + (err.message || "unknown"));
+  }
 });
 
-function setPanel(open) {
-  $("#panel").classList.toggle("open", open);
-  $("#overlay").classList.toggle("show", open);
-  $("#burger").classList.toggle("open", open);
-  $("#panel").setAttribute("aria-hidden", String(!open));
-}
-$("#burger").addEventListener("click", () => setPanel(!$("#panel").classList.contains("open")));
-$("#panelClose").addEventListener("click", () => setPanel(false));
-$("#overlay").addEventListener("click", () => setPanel(false));
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") { setPanel(false); closeModal(); } });
-
-$$("#ptabs button").forEach(btn => btn.addEventListener("click", () => {
-  $$("#ptabs button").forEach(b => b.classList.toggle("active", b === btn));
-  $$(".tab-content").forEach(c => c.classList.toggle("active", c.id === "tab-" + btn.dataset.tab));
-}));
-
-$("#supportSend").addEventListener("click", () => {
-  const box = $("#supportText");
-  if (!box.value.trim()) { toast(t("support_empty")); return; }
-  box.value = "";
-  toast(t("support_sent"));
-});
-
-function setPromoMsg(key, vars, ok) {
-  promoMsg = { key, vars, ok };
-  const m = $("#promoMsg");
-  m.textContent = t(key, vars);
-  m.classList.toggle("ok", !!ok);
-}
-$("#promoForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const code = $("#promoInput").value.trim().toUpperCase();
-  if (!code) { setPromoMsg("promo_empty", null, false); return; }
-  const promo = PROMOS[code];
-  if (!promo) { setPromoMsg("promo_bad", null, false); return; }
-  saveJSON(LS_PROMO, code);
-  promo.percent ? setPromoMsg("promo_ok_percent", { p: promo.percent }, true) : setPromoMsg("promo_ok_free", null, true);
-  renderPricing();
-});
-
-/* ---------- Copy to clipboard ---------- */
+/* =========================================================
+   Copy to clipboard
+   ========================================================= */
 document.addEventListener("click", (e) => {
   const btn = e.target.closest("[data-copy]");
   if (!btn) return;
@@ -977,33 +1205,361 @@ document.addEventListener("click", (e) => {
     }, 1500);
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(val).then(done).catch(() => {
-      const ta = document.createElement("textarea");
-      ta.value = val; document.body.appendChild(ta); ta.select();
-      try { document.execCommand("copy"); done(); } catch {}
-      document.body.removeChild(ta);
-    });
-  } else {
-    const ta = document.createElement("textarea");
-    ta.value = val; document.body.appendChild(ta); ta.select();
-    try { document.execCommand("copy"); done(); } catch {}
-    document.body.removeChild(ta);
+    navigator.clipboard.writeText(val).then(done).catch(() => {});
   }
   toast(t("copy_done"));
 });
 
-// Сохраняем контакт покупателя локально (для его же удобства)
-document.addEventListener("input", (e) => {
-  if (e.target.id !== "buyerContact") return;
-  try { localStorage.setItem("es_last_contact", e.target.value); } catch {}
-});
-try { const c = localStorage.getItem("es_last_contact"); if (c) $("#buyerContact").value = c; } catch {}
+/* =========================================================
+   Side panel
+   ========================================================= */
+function setPanel(open) {
+  $("#panel").classList.toggle("open", open);
+  $("#overlay").classList.toggle("show", open);
+  $("#burger").classList.toggle("open", open);
+  $("#panel").setAttribute("aria-hidden", String(!open));
+  if (open) showSub(null); // вернуться к главному меню при открытии
+}
+$("#burger").addEventListener("click", () => setPanel(!$("#panel").classList.contains("open")));
+$("#panelClose").addEventListener("click", () => setPanel(false));
+$("#overlay").addEventListener("click", () => setPanel(false));
 
-/* ---------- Init ---------- */
+function showSub(name) {
+  $("#menuMain").style.display = name ? "none" : "flex";
+  $$(".subpage").forEach(sp => sp.classList.remove("active"));
+  if (name) {
+    const el = $("#sub-" + name);
+    if (el) el.classList.add("active");
+  }
+}
+$$("[data-sub]").forEach(b => b.addEventListener("click", () => showSub(b.dataset.sub)));
+$$("[data-back]").forEach(b => b.addEventListener("click", () => showSub(null)));
+$("#menuMessages").addEventListener("click", async () => {
+  showSub("messages");
+  await loadUserTickets();
+});
+
+/* =========================================================
+   Image compress → base64
+   ========================================================= */
+function compressImage(file, maxW = 800, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    if (!file || !file.type.startsWith("image/")) return resolve(null);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxW / img.width);
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        let out = canvas.toDataURL("image/jpeg", quality);
+        // Если всё равно больше 700 КБ, ужимаем сильнее
+        while (out.length > 700_000 && quality > 0.3) {
+          quality -= 0.1;
+          out = canvas.toDataURL("image/jpeg", quality);
+        }
+        if (out.length > 900_000) return resolve(null);
+        resolve(out);
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* =========================================================
+   Create ticket (Support)
+   ========================================================= */
+let pendingTicketImage = null;
+$("#ticketFile").addEventListener("change", async (e) => {
+  const f = e.target.files[0];
+  if (!f) { pendingTicketImage = null; $("#fileLabel").textContent = t("ticket_attach_btn"); $("#fileHint").textContent = ""; return; }
+  $("#fileLabel").textContent = t("img_processing");
+  const img = await compressImage(f);
+  if (!img) { toast(t("img_too_big")); $("#fileLabel").textContent = t("ticket_attach_btn"); $("#fileHint").textContent = ""; return; }
+  pendingTicketImage = img;
+  $("#fileLabel").textContent = "✓ " + (f.name.length > 22 ? f.name.slice(0, 22) + "…" : f.name);
+  $("#fileHint").textContent = "";
+});
+
+$("#ticketForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!currentUser) { toast(t("ticket_login")); showPage("auth"); return; }
+  const subject = $("#ticketSubject").value.trim();
+  const text = $("#ticketText").value.trim();
+  if (!subject) { toast(t("ticket_need_subj")); return; }
+  if (!text) { toast(t("ticket_need_text")); return; }
+
+  // Проверяем статус админа
+  let adminOnline = false;
+  try {
+    const { db, doc, getDoc } = window.__fb;
+    const s = await getDoc(doc(db, "admin_status", "current"));
+    if (s.exists()) {
+      const data = s.data();
+      const lastSeen = data.lastSeen?.toDate ? data.lastSeen.toDate().getTime() : 0;
+      adminOnline = !!data.online && (Date.now() - lastSeen < 120_000);
+    }
+  } catch {}
+
+  try {
+    const { db, collection, addDoc, serverTimestamp } = window.__fb;
+    const ticketRef = await addDoc(collection(db, "tickets"), {
+      userEmail: currentUser.email,
+      userUid: currentUser.uid,
+      subject,
+      status: "open",
+      unreadForUser: 1,     // бот написал 1 сообщение → 1 непрочитанное
+      unreadForAdmin: 1,
+      createdAt: serverTimestamp(),
+      lastMessageAt: serverTimestamp()
+    });
+    // Сообщение пользователя
+    await addDoc(collection(db, "tickets", ticketRef.id, "messages"), {
+      from: "user",
+      text,
+      screenshot: pendingTicketImage || null,
+      createdAt: serverTimestamp()
+    });
+    // Ответ бота
+    await addDoc(collection(db, "tickets", ticketRef.id, "messages"), {
+      from: "bot",
+      text: adminOnline ? t("bot_online") : t("bot_offline"),
+      screenshot: null,
+      createdAt: serverTimestamp()
+    });
+
+    // Сброс формы
+    $("#ticketSubject").value = "";
+    $("#ticketText").value = "";
+    $("#ticketFile").value = "";
+    pendingTicketImage = null;
+    $("#fileLabel").textContent = t("ticket_attach_btn");
+
+    toast(t("ticket_sent"));
+    await loadUserTickets();
+    showSub("messages");
+  } catch (err) {
+    console.error(err);
+    toast("Error: " + (err.message || "unknown"));
+  }
+});
+
+/* =========================================================
+   User tickets + chat
+   ========================================================= */
+let userTickets = [];
+let currentTicketId = null;
+let unsubMessages = null;
+
+async function loadUserTickets() {
+  if (!currentUser) return;
+  try {
+    const { db, collection, query, where, getDocs, orderBy } = window.__fb;
+    const q = query(
+      collection(db, "tickets"),
+      where("userEmail", "==", currentUser.email)
+    );
+    const snap = await getDocs(q);
+    userTickets = [];
+    snap.forEach(d => userTickets.push({ id: d.id, ...d.data() }));
+    userTickets.sort((a, b) => {
+      const ta = a.lastMessageAt?.toDate ? a.lastMessageAt.toDate().getTime() : 0;
+      const tb = b.lastMessageAt?.toDate ? b.lastMessageAt.toDate().getTime() : 0;
+      return tb - ta;
+    });
+    renderTicketList();
+    updateUnreadBadge();
+  } catch (e) {
+    console.warn("tickets load failed", e);
+  }
+}
+
+function updateUnreadBadge() {
+  const total = userTickets.reduce((s, x) => s + (x.unreadForUser || 0), 0);
+  const dot = $("#burgerDot");
+  const cnt = $("#msgCnt");
+  if (total > 0) {
+    dot.classList.add("show");
+    cnt.classList.remove("hidden");
+    cnt.textContent = String(total);
+  } else {
+    dot.classList.remove("show");
+    cnt.classList.add("hidden");
+  }
+}
+
+function renderTicketList() {
+  const box = $("#ticketList");
+  if (!userTickets.length) {
+    box.innerHTML = `<p style="color:var(--muted);font-size:.88rem;">${t("chat_empty")}</p>`;
+    return;
+  }
+  box.innerHTML = "";
+  userTickets.forEach(tk => {
+    const card = document.createElement("div");
+    card.className = "ticket-card";
+    const unread = tk.unreadForUser || 0;
+    const date = tk.lastMessageAt?.toDate ? tk.lastMessageAt.toDate().toLocaleString() : "";
+    card.innerHTML = `
+      <div class="subj">${escapeHtml(tk.subject || "")} ${unread > 0 ? `<span class="badge-new">${unread}</span>` : ""}</div>
+      <div class="meta"><span class="status-pill ${tk.status}">${t("status_" + tk.status)}</span><span>${date}</span></div>
+    `;
+    card.addEventListener("click", () => openTicket(tk.id));
+    box.appendChild(card);
+  });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+async function openTicket(id) {
+  currentTicketId = id;
+  const tk = userTickets.find(x => x.id === id);
+  $("#chatSubject").textContent = tk ? tk.subject : "";
+  showSub("chat");
+
+  // Обнуляем unreadForUser
+  try {
+    const { db, doc, updateDoc } = window.__fb;
+    await updateDoc(doc(db, "tickets", id), { unreadForUser: 0 });
+    if (tk) tk.unreadForUser = 0;
+    updateUnreadBadge();
+  } catch {}
+
+  // Подписка на сообщения
+  if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+  const { db, collection, query, orderBy, onSnapshot } = window.__fb;
+  const q = query(collection(db, "tickets", id, "messages"), orderBy("createdAt", "asc"));
+  unsubMessages = onSnapshot(q, snap => {
+    const box = $("#chatMessages");
+    box.innerHTML = "";
+    snap.forEach(d => {
+      const m = d.data();
+      const div = document.createElement("div");
+      div.className = "msg " + (m.from || "user");
+      const when = m.createdAt?.toDate ? m.createdAt.toDate().toLocaleString() : "";
+      let html = escapeHtml(m.text || "");
+      if (m.screenshot) html += `<img src="${m.screenshot}" alt="">`;
+      html += `<span class="meta">${when}</span>`;
+      div.innerHTML = html;
+      box.appendChild(div);
+    });
+    box.scrollTop = box.scrollHeight;
+  });
+}
+
+let pendingChatImage = null;
+$("#chatFile").addEventListener("change", async (e) => {
+  const f = e.target.files[0];
+  if (!f) { pendingChatImage = null; $("#chatFileLabel").textContent = t("chat_attach"); return; }
+  $("#chatFileLabel").textContent = t("img_processing");
+  const img = await compressImage(f);
+  if (!img) { toast(t("img_too_big")); $("#chatFileLabel").textContent = t("chat_attach"); return; }
+  pendingChatImage = img;
+  $("#chatFileLabel").textContent = "✓ " + (f.name.length > 18 ? f.name.slice(0, 18) + "…" : f.name);
+});
+
+$("#chatForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!currentUser || !currentTicketId) return;
+  const text = $("#chatText").value.trim();
+  if (!text && !pendingChatImage) return;
+
+  try {
+    const { db, collection, addDoc, doc, updateDoc, increment, serverTimestamp } = window.__fb;
+    await addDoc(collection(db, "tickets", currentTicketId, "messages"), {
+      from: "user",
+      text,
+      screenshot: pendingChatImage || null,
+      createdAt: serverTimestamp()
+    });
+    await updateDoc(doc(db, "tickets", currentTicketId), {
+      lastMessageAt: serverTimestamp(),
+      unreadForAdmin: increment(1),
+      status: "open"
+    });
+    $("#chatText").value = "";
+    $("#chatFile").value = "";
+    pendingChatImage = null;
+    $("#chatFileLabel").textContent = t("chat_attach");
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+/* =========================================================
+   Promo code (form)
+   ========================================================= */
+let promoMsg = null;
+function setPromoMsg(key, vars, ok) {
+  promoMsg = { key, vars, ok };
+  const m = $("#promoMsg");
+  m.textContent = t(key, vars);
+  m.classList.toggle("ok", !!ok);
+}
+$("#promoForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const code = $("#promoInput").value.trim().toUpperCase();
+  if (!code) { setPromoMsg("promo_empty", null, false); return; }
+  const p = findPromo(code);
+  if (!p) { setPromoMsg("promo_bad", null, false); return; }
+  appliedPromo = p;
+  try { localStorage.setItem(LS_PROMO, code); } catch {}
+  setPromoMsg("promo_ok", { desc: promoDesc(p) }, true);
+  renderPricing();
+});
+
+/* =========================================================
+   Auth state listener + init
+   ========================================================= */
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user || null;
+  updateUserChip();
+
+  if (user) {
+    // Переходим на Features если были на auth
+    if (currentPage === "auth") showPage("features");
+    await loadUserTickets();
+  } else {
+    // Отписываемся от сообщений
+    if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+    userTickets = [];
+    updateUnreadBadge();
+    showPage("auth");
+  }
+});
+
+/* Старт */
 try { const r = localStorage.getItem(LS_REGION); if (r) $("#region").value = r; } catch {}
-updateUserChip();
 applyLang();
-showPage(getSession() ? "features" : "auth");
+updateUserChip();
+
+// Предзагрузка промокодов + возврат применённого
+(async () => {
+  await loadPromos();
+  try {
+    const saved = localStorage.getItem(LS_PROMO);
+    if (saved) {
+      const p = findPromo(saved);
+      if (p) appliedPromo = p;
+      else localStorage.removeItem(LS_PROMO);
+    }
+  } catch {}
+  renderPricing();
+})();
+
+// Кнопка закрытия модалки бота/онлайн — если админ в сети
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { setPanel(false); closeModal(); }
+});
 </script>
 </body>
 </html>
